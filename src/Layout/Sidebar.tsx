@@ -35,7 +35,7 @@ const Sidebar = ({drawerOnClose}:any) => {
               <ListItem key={text} disablePadding>
                 <ListItemButton //onClick={() => handleNavigation(text)}
                 >
-                  <ListItemText primary={text} color="#ffffff" />
+                  <ListItemText primary={text} color="{theme.primary}" />
                 </ListItemButton>
               </ListItem>
             ))}
