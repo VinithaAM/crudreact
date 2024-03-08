@@ -1,12 +1,14 @@
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
-import { Drawer, IconButton, List, ListItem, ListItemButton, ListItemText, styled } from "@mui/material";
+import { IconButton, List, ListItem, ListItemButton, ListItemText, styled } from "@mui/material";
 import theme from "../theme";
-import  { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { ScreenDetails } from "../Routes/Urls";
+import { startTransition } from "react";
 
 const Sidebar = ({drawerOnClose}:any) => {
-  const [open, setOpen] = useState(false);
-  const settings = ["Location", "Dashboard", "Logout"];
+  const settings = ScreenDetails;
+  const navigation=useNavigate()
  
   const DrawerHeader = styled("div")(({ theme }) => ({
     display: "flex",
@@ -15,6 +17,12 @@ const Sidebar = ({drawerOnClose}:any) => {
     ...theme.mixins.toolbar,
     justifyContent: "flex-end",
   }));
+  const handleNavigation =(text:string)=>{
+    startTransition(() => {
+    navigation(text)
+    
+    })
+  }
   return (
     <div>
      
@@ -32,10 +40,9 @@ const Sidebar = ({drawerOnClose}:any) => {
           </DrawerHeader>
           <List>
             {settings.map((text, index) => (
-              <ListItem key={text} disablePadding>
-                <ListItemButton //onClick={() => handleNavigation(text)}
-                >
-                  <ListItemText primary={text} color="{theme.primary}" />
+              <ListItem key={text.name} disablePadding>
+                <ListItemButton onClick={() => handleNavigation(text.url)} >
+                  <ListItemText primary={text.name} sx={{color: (theme) => theme.palette.warning.main }} />
                 </ListItemButton>
               </ListItem>
             ))}

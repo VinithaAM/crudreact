@@ -12,7 +12,12 @@ const theme = createTheme({
     error: {
       main: red.A400,
     },
+    warning:{
+      main:'#eb8613'
+    },
+   
   },
+  
 });
 
 export default theme;

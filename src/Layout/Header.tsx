@@ -34,7 +34,7 @@ const Header = () => {
     <div>
       <Box sx={{ flexGrow: 1 }}>
         <AppBar position="static">
-          <Toolbar style={{ minHeight: 5, backgroundColor: "{theme.primary}" }}>
+          <Toolbar sx={{ minHeight: 5, backgroundColor: (theme) => theme.palette.primary.main }}>
             <Box sx={{ flexGrow: 1, display: "flex" }}>
               <IconButton
                 size="large"

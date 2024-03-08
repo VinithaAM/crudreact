@@ -1,9 +1,15 @@
-import React from 'react'
+import Footer from "./Footer"
+import Header from "./Header"
 
-const Layout = () => {
+interface Layoutprops{
+  children:React.ReactElement
+}
+const Layout = (props:Layoutprops) => {
   return (
     <div>
-      
+      <Header />
+      {props.children}
+      <Footer />
     </div>
   )
 }
