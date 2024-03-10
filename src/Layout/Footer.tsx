@@ -1,15 +1,13 @@
-import { AppBar, Box, IconButton, Menu, MenuItem, Toolbar, Typography } from '@mui/material'
-import React from 'react'
-import theme from '../theme'
+import { AppBar, Box,  Toolbar, Typography } from '@mui/material'
+
 
 const Footer = () => {
   return (
     <div>
     <Box sx={{ flexGrow: 1 }}>
-      <AppBar position="static">
-        <Toolbar sx={{ minHeight: 0, backgroundColor: (theme) => theme.palette.warning.main }}>
-          <Box sx={{ flexGrow: 1, display: "flex" }} bgcolor={"theme.secondary"}>
-
+      <AppBar position="relative"  style={{ top: 'auto', bottom: 0 }} >
+        <Toolbar sx={{ minHeight: 0, backgroundColor: (theme) => theme.palette.secondary.main }}>
+          <Box sx={{ flexGrow: 1, display: "flex" }}>
 
           </Box>
 

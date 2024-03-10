@@ -7,7 +7,6 @@ import {
   MenuItem,
   Radio,
   Select,
-  Stack,
   TextField,
   Typography,
 } from "@mui/material";
@@ -19,15 +18,49 @@ import { forwardRef, useState } from "react";
 import { IMaskInput } from "react-imask";
 import ToggleOffOutlinedIcon from '@mui/icons-material/ToggleOffOutlined';
 import ToggleOnOutlinedIcon from '@mui/icons-material/ToggleOnOutlined';
+import './styles.css';
+import { IEmployeeDetails, emptyObject } from "../../Types.ts/Employee";
 
 const NewEmployee = () => {
+  const [employeeDetail,setEmplyeeDetails]=useState<IEmployeeDetails>(emptyObject)
   const [value, setValue] = useState<Dayjs | null>(null);
   const [genderValue, setGenderValue] = useState("");
-  const [userStatus, setUserStatus]=useState(true)
+  const [userStatus, setUserStatus] = useState(true)
+  const [accountType, setAccountType] = useState('')
+  const [isSharedAccount, setIsSharedAccount] = useState(false)
+  const [firstName,setFirstName]=useState('')
+  const [lastname,setLastName]=useState('')
 
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleEditEmployee = (field: string, value: any, id: number) => {
+    console.log( value, id);
+    setEmplyeeDetails((p) => {
+      if (p.id === id) {
+        if(field==='dateOfBirth'){
+          setValue(value)
+        }
+        if(field==='userStatus'){
+          setUserStatus(!userStatus)
+        }
+        return { ...p, [field]: value };
+       
+      }
+      return p;
+    });
+    console.log("empl+++",employeeDetail)
+  };
+  const handleChangeGender = (event: React.ChangeEvent<HTMLInputElement>) => {
     setGenderValue(event.target.value);
-    console.log(genderValue, event.target.value);
+    handleEditEmployee('gender',event.target.value,employeeDetail.id)
+  };
+  const handleChangeAccountType = (event: any) => {
+    setAccountType(event.target.value);
+    if (event.target.value === "Shared") {
+      setIsSharedAccount(true)
+    }
+    else {
+      setIsSharedAccount(false)
+    }
+    handleEditEmployee("accountType",(event.target.value),employeeDetail.id)
   };
   function generateAlphaNumeric(length: number): string {
     const alphanumeric =
@@ -51,17 +84,12 @@ const NewEmployee = () => {
       const { onChange, ...other } = props;
       return (
         <IMaskInput
-          {...other}
-          mask="(#00) 000-0000"
-          definitions={{
-            "#": /[1-9]/,
-          }}
-          inputRef={ref}
-          onAccept={(value: any) =>
-            onChange({ target: { name: props.name, value } })
-          }
-          overwrite
-        />
+      {...other}
+      mask="(#00) 0000-0000"
+      definitions={{ '#': /[1-9]/ }}
+      onAccept={(value) => handleEditEmployee("phoneNumber",value,employeeDetail.id)}
+      overwrite
+    />
       );
     }
   );
@@ -75,168 +103,159 @@ const NewEmployee = () => {
           alignItems: "center",
         }}
       >
-        <Stack spacing={1}>
-          <Box>
-            <h3>Add New Employee Detail</h3>
+
+        <Box>
+          <h3>Add New Employee Detail</h3>
+        </Box>
+        <Box style={{ display: "flex", justifyContent:"space-between",alignItems:"center"}}>
+          <Box sx={{display:"flex",flexDirection:"column" ,justifyContent:"center"}}>
+            <div className="styles.classNameFromCSS">
+            <InputLabel >FirstName</InputLabel>
+            </div>
+           
+            <TextField type="text" onChange={(e)=>handleEditEmployee("firstName",e?.target?.value,employeeDetail.id)} />
           </Box>
-          <div style={{ display: "flex" }}>
-            <Box sx={{ marginRight: 2 }}>
-              <InputLabel>FirstName</InputLabel>
-              <TextField type="text" />
-            </Box>
-            <Box sx={{ marginRight: 2 }}>
-              <InputLabel>LastName</InputLabel>
-              <TextField type="text" />
-            </Box>
-          </div>
-          <div style={{ display: "flex" }}>
-            <Box>
-              <InputLabel>EmployeeId</InputLabel>
-              <TextField />
-            </Box>
-            <Box>
-              <InputLabel>Gender</InputLabel>
-              <Radio
-                checked={genderValue === "Male"}
-                onChange={handleChange}
-                value="Male"
-                name="radio-buttons"
-                inputProps={{ "aria-label": "Male" }}
-              />
-              <label htmlFor="Male">Male</label>
-              <Radio
-                checked={genderValue === "Female"}
-                onChange={handleChange}
-                value="Female"
-                name="radio-buttons"
-                inputProps={{ "aria-label": "Female" }}
-              />
-              <label htmlFor="Female">Female</label>
-              <Radio
-                checked={genderValue === "Others"}
-                onChange={handleChange}
-                value="Others"
-                name="radio-buttons"
-                inputProps={{ "aria-label": "Others" }}
-              />
-              <label htmlFor="Others">Others</label>
-            </Box>
-          </div>
-          <div style={{ display: "flex" }}>
-            <Box>
-              <InputLabel>DateOfBirth</InputLabel>
-              {/* <DateField /> */}
-              <LocalizationProvider dateAdapter={AdapterDayjs}>
-                <DemoContainer components={["DatePicker"]}>
-                  <DatePicker
-                    value={value}
-                    label="Basic date picker"
-                    onChange={(newValue) => setValue(newValue)}
-                  />
-                </DemoContainer>
-              </LocalizationProvider>
-            </Box>
+          <Box  sx={{display:"flex",flexDirection:"column" ,justifyContent:"center"}}>
+            <InputLabel>Last Name</InputLabel>
+            <TextField type="text" 
+           onChange={(e)=>handleEditEmployee("lastName",e?.target?.value,employeeDetail.id)}
+          
+  />
+          </Box>
+        </Box>
+        <div style={{ display: "flex" }}>
+          <Box>
+            <InputLabel>EmployeeId</InputLabel>
+            <TextField type="text" />
+          </Box>
+          <Box>
+            <InputLabel>Gender</InputLabel>
+            <Radio
+              checked={genderValue === "Male"}
+              onChange={handleChangeGender}
+              value="Male"
+              name="radio-buttons"
+              inputProps={{ "aria-label": "Male" }}
+            />
+            <label htmlFor="Male">Male</label>
+            <Radio
+              checked={genderValue === "Female"}
+              onChange={handleChangeGender}
+              value="Female"
+              name="radio-buttons"
+              inputProps={{ "aria-label": "Female" }}
+            />
+            <label htmlFor="Female">Female</label>
+            <Radio
+              checked={genderValue === "Others"}
+              onChange={handleChangeGender}
+              value="Others"
+              name="radio-buttons"
+              inputProps={{ "aria-label": "Others" }}
+            />
+            <label htmlFor="Others">Others</label>
+          </Box>
+        </div>
+        <div style={{ display: "flex" }}>
+          <Box>
+            <InputLabel>DateOfBirth</InputLabel>
+           
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <DemoContainer components={["DatePicker"]}>
+                <DatePicker
+                  value={value}
+                  label="Basic date picker"
+                  onChange={(newValue) => handleEditEmployee('dateOfBirth',newValue,employeeDetail.id)}
+                />
+              </DemoContainer>
+            </LocalizationProvider>
+          </Box>
 
-            <Box>
-              <InputLabel>Age</InputLabel>
-              <TextField disabled={true} value="25" />
-            </Box>
-          </div>
-          <div style={{ display: "flex" }}>
-            <Box>
-              <InputLabel>Code</InputLabel>
-              <TextField disabled defaultValue={"+61"} />
-            </Box>
+          <Box>
+            <InputLabel>Age</InputLabel>
+            <TextField disabled={true} value="25" />
+          </Box>
+        </div>
+        <div style={{ display: "flex" }}>
+          <Box>
+            <InputLabel>Code</InputLabel>
+            <TextField disabled defaultValue={"+61"} />
+          </Box>
 
-            <Box>
-              <InputLabel>PhoneNumber</InputLabel>
+          <Box>
+            <InputLabel>PhoneNumber</InputLabel>
 
-              <TextField
-                defaultValue={"4 _ _ _ _ _ _ _ _"}
-                InputProps={{
-                  inputComponent: TextMaskCustom as any,
+            <TextField
+              placeholder={"4 _ _ _ _ _ _ _ _"}
+              InputProps={{
+                inputComponent: TextMaskCustom as any,
+              }}
+             
+            />
+          </Box>
+        </div>
+        <div style={{ display: "flex" }}>
+          <Box>
+            <InputLabel>Email</InputLabel>
+            <TextField   onChange={(e)=>handleEditEmployee("email",e?.target?.value,employeeDetail.id)}/>
+          </Box>
+          <Box>
+            <InputLabel>UserStatus</InputLabel>
+            <IconButton
+              onClick={(e) => handleEditEmployee("userStatus",(!userStatus),employeeDetail.id)}
+              //onChange={(e)=>handleEditEmployee("userStatus",(!userStatus),employeeDetail.id)}
+              >
+              {userStatus ? <ToggleOnOutlinedIcon style={{ color: 'green', fontSize: 50 }} /> : <ToggleOffOutlinedIcon style={{ color: 'red', fontSize: 50 }} />}
+              <Typography variant="body1" style={{ marginLeft: 8 }}>
+                {userStatus ? 'Enabled' : 'Disabled'}
+              </Typography>
+            </IconButton>
+          </Box>
+        </div>
+        <div style={{ display: "flex" }}>
+          <Box>
+            <InputLabel>AccountType</InputLabel>
+            <Box>
+              <Select
+                style={{
+                  width: "120%",
+                  borderBottom: "1px ",
+                  borderBottomColor: "#EEEFE9",
+                  borderTop: "1px ",
+                  borderTopColor: "#d6d3ce",
+                  textAlign: "left",
                 }}
-              />
-            </Box>
-          </div>
-          <div style={{ display: "flex" }}>
-            <Box>
-              <InputLabel>Email</InputLabel>
-              <TextField />
-            </Box>
-            <Box>
-              <InputLabel>UserStatus</InputLabel>
-              <IconButton  
-              onClick={() => setUserStatus(!userStatus)}>
-      {userStatus ? <ToggleOnOutlinedIcon  style={{ color:  'green', fontSize: 50 }} /> : <ToggleOffOutlinedIcon  style={{ color:  'red', fontSize: 50 }}/>}
-      <Typography variant="body1" style={{ marginLeft: 8 }}>
-    {userStatus ? 'Enabled' : 'Disabled'}
-  </Typography>
-    </IconButton>
-            </Box>
-          </div>
-          <div style={{ display: "flex" }}>
-            <Box>
-              <InputLabel>AccountType</InputLabel>
-              <Box>
-                <Select
-                  style={{
-                    width: "120%",
-                    borderBottom: "1px ",
-                    borderBottomColor: "#EEEFE9",
-                    borderTop: "1px ",
-                    borderTopColor: "#d6d3ce",
-                    textAlign: "left",
-                  }}
-                  // sx={{
-                  //   "& .MuiOutlinedInput-notchedOutline": {
-                  //     border: "transparent"
-                  //   },
 
-                  //   "& .MuiOutlinedInput-root": {
-                  //     "&.Mui-focused fieldset": {
-                  //       border: "2px solid black"
-                  //     }
-                  //   }
-                  // }}
-                  labelId="demo-simple-select-label"
-                  id="demo-simple-select"
-                  name="attendentSeat"
-                  // onChange={(e) =>
-                  //   handleEditPlanner(
-                  //     "attendantSheet",
-                  //     e.target.value,
-                  //     plannerItem.tempId
-                  //   )
-                  // }
-                >
-                  <MenuItem value={10}>Shared</MenuItem>
-                  <MenuItem value={20}>Personal</MenuItem>
-                </Select>
-              </Box>
+                labelId="demo-simple-select-label"
+                id="demo-simple-select"
+                onChange={(e) => handleChangeAccountType(e)}
+              >
+                <MenuItem value={"Shared"}>Shared</MenuItem>
+                <MenuItem value={"Personal"}>Personal</MenuItem>
+              </Select>
             </Box>
-            <Box>
-              <InputLabel>Status</InputLabel>
-              <TextField />
-            </Box>
-          </div>
+          </Box>
+        </div>
+        {isSharedAccount && (
           <Box>
             <InputLabel>Password</InputLabel>
-            <TextField />
+            <TextField onChange={(e) => handleEditEmployee("password",e.target.value,employeeDetail.id)} />
             <InputLabel>ConfirmPassword</InputLabel>
             <TextField />
           </Box>
-          <Box>
-            <Button variant="contained" style={{ margin: 5, padding: 5 }}>
-              {" "}
-              Save
-            </Button>
-            <Button variant="contained" style={{ margin: 5, padding: 5 }}>
-              {" "}
-              Cancel
-            </Button>
-          </Box>
-        </Stack>
+        )}
+
+        <Box>
+          <Button variant="contained" style={{ margin: 5, padding: 5 }}>
+
+            Save
+          </Button>
+          <Button variant="contained" style={{ margin: 5, padding: 5 }}>
+
+            Cancel
+          </Button>
+        </Box>
+
       </Box>
     </Container>
   );

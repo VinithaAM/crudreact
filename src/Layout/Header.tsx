@@ -1,12 +1,9 @@
-import { AppBar, Box, Drawer, IconButton, List, ListItem, ListItemButton, ListItemText, Menu, MenuItem, Toolbar, Typography, styled } from '@mui/material'
+import { AppBar, Box, Drawer, IconButton,  Menu, MenuItem, Toolbar, Typography } from '@mui/material'
 import MoreIcon from "@mui/icons-material/MoreVert";
 import AccountCircle from "@mui/icons-material/AccountCircle";
 import MenuIcon from "@mui/icons-material/Menu";
-import { useNavigate } from 'react-router-dom';
 import Sidebar from './Sidebar';
 import { useState } from 'react';
-import theme from '../theme';
-
 const Header = () => {
   const logo = require("../assets/logo.jpg");
   const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);

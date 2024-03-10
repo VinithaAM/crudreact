@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react'
-import { DataGrid, GridColDef, GridToolbar, GridValueGetterParams } from '@mui/x-data-grid';
-import { Box, Button, InputAdornment, InputLabel, TextField } from '@mui/material';
-import { DataGridPro } from '@mui/x-data-grid-pro';
-import { Search } from '@mui/icons-material';
+import { DataGrid, GridColDef, } from '@mui/x-data-grid';
+// GridToolbar, GridValueGetterParams, InputAdornment, InputLabel,
+import { Box, Button,  TextField, Typography } from '@mui/material';
+// import { DataGridPro } from '@mui/x-data-grid-pro';
+// import { Search } from '@mui/icons-material';
 import { IEmployeeDetails } from '../../Types.ts/Employee';
 import { getUserDetails } from '../../Services/EmployeeService';
 
@@ -101,17 +102,17 @@ const EmployeeDetails = () => {
 
       }
   }
-  const rows = [
-    { id: 1, lastName: 'Snow', firstName: 'Jon', age: 14,phonenumber:'123',email:'sample@123',accounttype:'personal',DOB:'20-11-2022' },
-    { id: 2, lastName: 'Lannister', firstName: 'Cersei', age: 14,phonenumber:'123',email:'sample@123',accounttype:'personal',DOB:'20-11-2022' },
-    { id: 3, lastName: 'Lannister', firstName: 'Jaime', age: 14,phonenumber:'123',email:'sample@123',accounttype:'personal',DOB:'20-11-2022' },
-    { id: 4, lastName: 'Stark', firstName: 'Arya', age: 14,phonenumber:'123',email:'sample@123',accounttype:'personal',DOB:'20-11-2022' },
-    { id: 5, lastName: 'Targaryen', firstName: 'Daenerys', age: null },
-    { id: 6, lastName: 'Melisandre', firstName: null, age: 14,phonenumber:'123',email:'sample@123',accounttype:'personal',DOB:'20-11-2022' },
-    { id: 7, lastName: 'Clifford', firstName: 'Ferrara', age: 14,phonenumber:'123',email:'sample@123',accounttype:'personal',DOB:'20-11-2022' },
-    { id: 8, lastName: 'Frances', firstName: 'Rossini', age: 14,phonenumber:'123',email:'sample@123',accounttype:'personal',DOB:'20-11-2022' },
-    { id: 9, lastName: 'Roxie', firstName: 'Harvey', age: 14,phonenumber:'123',email:'sample@123',accounttype:'personal',DOB:'20-11-2022' },
-  ];
+  // const rows = [
+  //   { id: 1, lastName: 'Snow', firstName: 'Jon', age: 14,phonenumber:'123',email:'sample@123',accounttype:'personal',DOB:'20-11-2022' },
+  //   { id: 2, lastName: 'Lannister', firstName: 'Cersei', age: 14,phonenumber:'123',email:'sample@123',accounttype:'personal',DOB:'20-11-2022' },
+  //   { id: 3, lastName: 'Lannister', firstName: 'Jaime', age: 14,phonenumber:'123',email:'sample@123',accounttype:'personal',DOB:'20-11-2022' },
+  //   { id: 4, lastName: 'Stark', firstName: 'Arya', age: 14,phonenumber:'123',email:'sample@123',accounttype:'personal',DOB:'20-11-2022' },
+  //   { id: 5, lastName: 'Targaryen', firstName: 'Daenerys', age: null },
+  //   { id: 6, lastName: 'Melisandre', firstName: null, age: 14,phonenumber:'123',email:'sample@123',accounttype:'personal',DOB:'20-11-2022' },
+  //   { id: 7, lastName: 'Clifford', firstName: 'Ferrara', age: 14,phonenumber:'123',email:'sample@123',accounttype:'personal',DOB:'20-11-2022' },
+  //   { id: 8, lastName: 'Frances', firstName: 'Rossini', age: 14,phonenumber:'123',email:'sample@123',accounttype:'personal',DOB:'20-11-2022' },
+  //   { id: 9, lastName: 'Roxie', firstName: 'Harvey', age: 14,phonenumber:'123',email:'sample@123',accounttype:'personal',DOB:'20-11-2022' },
+  // ];
   const CustomToolbar = () => (
     // <GridToolbar>
       <TextField
@@ -146,11 +147,23 @@ const EmployeeDetails = () => {
     // Clear search logic here
   };
   return (
-    <Box sx={{ width: '100%',margin:5,marginRight:5 }}>
+    <Box sx={{ margin:5,marginRight:5 }}>
       <Box>
-        <h3>Employee Details</h3>
-      <InputLabel style={{ alignSelf: "flex-end"}}>TotalCount:20</InputLabel>
-      <Button variant="contained" style={{margin:5,backgroundColor:"blue"}}>Add</Button>
+        <Typography display={"flex"} justifyContent={"center"}>
+        Employee Details
+        </Typography>
+       
+        <Box sx={{display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+          
+          <Typography display={"flex"} justifyContent={"flex-start"}>TotalCount:{searchText}</Typography>
+        
+        {/* <Typography display={"flex"} justifyContent={"flex-start"}>TotalCount:{searchText}</Typography> */}
+       
+        <Button variant="contained" style={{margin:5,backgroundColor:"blue" ,alignItems:"flex-end",justifyContent:"flex-end"}}>Add</Button>
+       
+        
+        </Box>
+      
       </Box>
    
       <DataGrid 
