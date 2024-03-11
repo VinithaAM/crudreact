@@ -216,7 +216,7 @@ const NewEmployee = (prop: IEmployeeDetails) => {
         }}
       >
         <Box>
-          <Typography>
+          <Typography >
             {action === "View"
               ? "View Employee Detail"
               : action === "Edit"
@@ -224,26 +224,29 @@ const NewEmployee = (prop: IEmployeeDetails) => {
               : "Add New Employee Detail"}
           </Typography>
         </Box>
-        <Box
+        {/* <Box
           style={{
             display: "flex",
             justifyContent: "space-between",
             alignItems: "center",
+            margin:5
           }}
-        >
+        > */}
           <Box
             sx={{
               display: "flex",
               flexDirection: "column",
-              justifyContent: "center",
+              justifyContent: "space-between",
+              margin:1
             }}
           >
-            <div className="styles.classNameFromCSS">
+          
               <InputLabel>FirstName</InputLabel>
-            </div>
+           
 
             <TextField
               type="text"
+              required
               className="small-textfield"
               inputProps={{ maxLength: 100 }}
               value={employeeDetail.firstName}
@@ -255,16 +258,18 @@ const NewEmployee = (prop: IEmployeeDetails) => {
                 )
               }
             />
-          {/* </Box>
+          </Box>
           <Box
             sx={{
               display: "flex",
               flexDirection: "column",
-              justifyContent: "center",
+              justifyContent: "space-between",
+              margin:1
             }}
-          > */}
+          >
             <InputLabel>Last Name</InputLabel>
             <TextField
+            required
               type="text"
               inputProps={{ maxLength: 100 }}
               className="small-textfield"
@@ -278,9 +283,13 @@ const NewEmployee = (prop: IEmployeeDetails) => {
               }
             />
           </Box>
-        </Box>
-        <div style={{ display: "flex" }}>
-          <Box>
+    
+          <Box  sx={{
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "space-between",
+              margin:1
+            }}>
             <InputLabel>EmployeeId</InputLabel>
             <TextField
               type="text"
@@ -289,8 +298,15 @@ const NewEmployee = (prop: IEmployeeDetails) => {
               disabled={true}
             />
           </Box>
-          <Box>
+          <Box  sx={{
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "space-between",
+              margin:1
+            }}>
+
             <InputLabel>Gender</InputLabel>
+            <Box sx={{flexBasis:"row"}}>
             <Radio
               checked={genderValue === "Male"}
               onChange={handleChangeGender}
@@ -315,10 +331,16 @@ const NewEmployee = (prop: IEmployeeDetails) => {
               inputProps={{ "aria-label": "Others" }}
             />
             <label htmlFor="Others">Others</label>
+            </Box>
           </Box>
-        </div>
-        <div style={{ display: "flex" }}>
-          <Box>
+      
+       
+          <Box  sx={{
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "space-evenly",
+              margin:1
+            }}>
             <InputLabel>DateOfBirth</InputLabel>
             <DatePicker onChange={(e)=>handleEditEmployee("dateOfBirth",e,employeeDetail.id)} value={dob}    />
               {/* <div style={{ overflow: 'hidden' }}>
@@ -340,18 +362,31 @@ const NewEmployee = (prop: IEmployeeDetails) => {
             </div> */}
           </Box>
 
-          <Box>
+          <Box sx={{
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "space-evenly",
+              margin:1}}>
             <InputLabel>Age</InputLabel>
             <TextField disabled={true} value={employeeDetail.age} className="verysmall-textfield"/>
           </Box>
-        </div>
-        <div style={{ display: "flex" }}>
-          <Box>
+       
+    
+          <Box sx={{
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "space-evenly",
+              margin:1}}
+              >
             <InputLabel>Code</InputLabel>
             <TextField disabled defaultValue={"+61"} className="verysmall-textfield" />
           </Box>
 
-          <Box>
+          <Box sx={{
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "space-evenly",
+              margin:1}}>
             <InputLabel>PhoneNumber</InputLabel>
 
             <TextField
@@ -369,9 +404,13 @@ const NewEmployee = (prop: IEmployeeDetails) => {
               // }}
             />
           </Box>
-        </div>
-        <div style={{ display: "flex" }}>
-          <Box>
+      
+  
+          <Box sx={{
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "space-evenly",
+              margin:1}} >
             <InputLabel>Email</InputLabel>
             <TextField className="small-textfield"
               value={employeeDetail.email}
@@ -383,7 +422,11 @@ const NewEmployee = (prop: IEmployeeDetails) => {
         <span style={{ color: 'red' }}>Invalid email address</span>
       }
           </Box>
-          <Box>
+          <Box sx={{
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "space-evenly",
+              margin:1}}>
             <InputLabel>UserStatus</InputLabel>
             <IconButton
               onClick={(e) =>
@@ -403,9 +446,13 @@ const NewEmployee = (prop: IEmployeeDetails) => {
               </Typography>
             </IconButton>
           </Box>
-        </div>
-        <div style={{ display: "flex" }}>
-          <Box>
+        
+    
+          <Box sx={{
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "space-evenly",
+              margin:1}}>
             <InputLabel>AccountType</InputLabel>
             <Box>
               <Select className="small-textfield"
@@ -427,11 +474,12 @@ const NewEmployee = (prop: IEmployeeDetails) => {
               </Select>
             </Box>
           </Box>
-        </div>
+     
         {isSharedAccount && (
           <Box
             sx={{
               display: "flex",
+              flexDirection:"column",
               justifyContent: "space-between",
               alignItems: "center",
             }}
@@ -456,6 +504,11 @@ const NewEmployee = (prop: IEmployeeDetails) => {
 				//valueAgain={confirmPassword}
 				onChange={(isValid) => {}}
 			/>
+      <Box sx={{
+              display: "flex",
+              flexDirection: "row",
+              justifyContent: "space-evenly",
+              margin:1}}>
             <Checkbox
               checked={enableTwofactor}
               onChange={(e) =>
@@ -468,18 +521,19 @@ const NewEmployee = (prop: IEmployeeDetails) => {
             />
             <InputLabel>Enable TwoFactor Authendication</InputLabel>
           </Box>
+          </Box>
         )}
 
         <Box>
           <Button
             variant="contained"
-            style={{ margin: 5, padding: 5 }}
+            style={{ margin: 5, padding: 5 ,textTransform:"capitalize",backgroundColor:"green"}}
             disabled={action === "View"}
             onClick={handleSave}
           >
             {action === "View" ? "Save" : action === "Edit" ? "Update" : "Save"}
           </Button>
-          <Button variant="contained"  onClick={handlecancel} style={{ margin: 5, padding: 5 }}>
+          <Button variant="contained"  onClick={handlecancel} style={{ margin: 5, padding: 5,textTransform:"capitalize",backgroundColor:"gray" }}>
             Cancel
           </Button>
         </Box>

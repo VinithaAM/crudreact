@@ -90,6 +90,7 @@ const LoginPage = () => {
             fullWidth
             variant="contained"
             sx={{ mt: 3, mb: 2 }}
+            style={{textTransform:"capitalize"}}
           >
             Sign In
           </Button>

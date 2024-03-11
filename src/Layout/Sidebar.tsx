@@ -41,7 +41,7 @@ const Sidebar = ({drawerOnClose}:any) => {
             {settings.map((text, index) => (
               <ListItem key={text.name} disablePadding>
                 <ListItemButton onClick={() => handleNavigation(text.url)} >
-                  <ListItemText primary={text.name} sx={{color: (theme) => theme.palette.warning.main }} />
+                  <ListItemText primary={text.name} style={{color:"#ffffff"}} />
                 </ListItemButton>
               </ListItem>
             ))}

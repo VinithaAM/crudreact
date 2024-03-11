@@ -26,6 +26,7 @@ import VisibilityIcon from "@mui/icons-material/Visibility";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { NavigateOptions, useNavigate } from "react-router-dom";
 import { format } from "date-fns";
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 
 const EmployeeDetails = () => {
   const navigation = useNavigate();
@@ -257,18 +258,22 @@ const EmployeeDetails = () => {
           <Typography display={"flex"} justifyContent={"flex-start"}>
             TotalCount:{employeeDetails.length}
           </Typography>
-
+          
           <Button
-            variant="contained"
+            variant="text"
+            startIcon={<AddCircleOutlineIcon />}
             style={{
-              margin: 5,
-              backgroundColor: "blue",
+              margin: 15,
               alignItems: "flex-end",
               justifyContent: "flex-end",
+              textTransform:"capitalize",
+              color:"primary", 
+              
+              padding:5
             }}
             onClick={handleAddNewUser}
           >
-            Add
+            Add New
           </Button>
         </Box>
       </Box>
