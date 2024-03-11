@@ -2,6 +2,7 @@ import React, { lazy } from 'react';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { PATH } from '../Constants/Path';
 import Layout from '../Layout';
+import { emptyObject } from '../Types.ts/Employee';
 
 
 
@@ -20,7 +21,7 @@ const BaseRoute = () => {
           <Route path={PATH.HOME} element={<Login />} />
           <Route path={PATH.REGISTER} element={<Register />} />
           <Route path={PATH.EMPLOYEE_DETAILS} element={<EmployeeDetails />} />
-          <Route path={PATH.EMPLOYEE_DETAILS_NEW} element={<NewEmployeeDetail />} />
+          <Route path={PATH.EMPLOYEE_DETAILS_NEW} element={<NewEmployeeDetail {...emptyObject}/>} />
         </Routes>
       </div>
     </div>

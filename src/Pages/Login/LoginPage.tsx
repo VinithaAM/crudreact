@@ -1,12 +1,12 @@
 import { Avatar, Box, Button, Container, CssBaseline, Grid, IconButton, Link, TextField, ThemeProvider, Typography } from '@mui/material'
 import theme from '../../theme';
-import { ToastContainer, toast } from 'react-toastify';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
-import { useState } from 'react';
+import { startTransition, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 const LoginPage = () => {
    const navigate = useNavigate();
     const [userName,setUserName]=useState('')
@@ -15,13 +15,14 @@ const LoginPage = () => {
 
     const handleSignIn =()=>{
         if(userName ==="AdminIntergy@gmail.com" && password ==='Admin@123'){
+          startTransition(() => {
           navigate("/employeedetails")
+          })
         }
         else{
           toast.success("Please provide valid Login details!", {
             position: "top-center"
           });
-            // toast("")
         }
     }
     const onHandleUserName=(event:any)=>{
@@ -107,6 +108,10 @@ const LoginPage = () => {
         </Box>
       </Box>
       <ToastContainer
+      className="toast-container"
+      toastClassName="custom-toast"
+      bodyClassName="custom-toast-body"
+      progressClassName="custom-toast-progress" 
    />
     </Container>
      

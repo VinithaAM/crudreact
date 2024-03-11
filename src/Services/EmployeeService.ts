@@ -15,5 +15,5 @@ export const createNewEmployee = (saveDetails: IEmployeeDetails) => {
     return axios.put(`${BASE_APIURL}/User/Update`,updateDetails)
   }
   export const deleteEmployeeDetails=(id:number)=>{
-    return axios.put(`${BASE_APIURL}/User/Delete?id=${id}`)
+    return axios.delete(`${BASE_APIURL}/User/Delete?id=${id}`)
   }

@@ -1,0 +1,12 @@
+.custom-toast {
+    background-color: #8ae482;
+    color: #070606;
+  }
+  
+  .custom-toast-body {
+    font-size: 16px;
+  }
+  
+  .custom-toast-progress {
+    background-color: rgba(43, 255, 0, 0.815);
+  }

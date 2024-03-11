@@ -38,9 +38,9 @@ export interface IEmployeeDetails extends CommonFields {
     enableTwoFactor:false,
     status:true,
     createdBy:0,
-    createdDateTime:undefined,
+    createdDateTime:new Date(),
     modifiedBy:0,
-    modifiedDateTime:undefined,
+    modifiedDateTime:new Date(),
     deletedBy:0,
-    deletedDateTime:undefined
+    deletedDateTime:new Date()
   }

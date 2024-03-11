@@ -20,7 +20,6 @@ const Sidebar = ({drawerOnClose}:any) => {
   const handleNavigation =(text:string)=>{
     startTransition(() => {
     navigation(text)
-    
     })
   }
   return (

@@ -4,3 +4,44 @@
     font-weight: 900;
     color: "revert-layer";
 }
+.custom-toast {
+    background-color: #8ae482;
+    color: #070606;
+  }
+  
+  .custom-toast-body {
+    font-size: 16px;
+  }
+  
+  .custom-toast-progress {
+    background-color: rgba(43, 255, 0, 0.815);
+  }
+  .small-textfield .MuiInputBase-input {
+    padding: 5px;
+    font-size: 12px; 
+    
+  }
+  
+  .small-textfield .MuiOutlinedInput-root {
+    width: 200px;
+  }
+  .verysmall-textfield .MuiOutlinedInput-root {
+    width: 40px;
+  }
+  .verysmall-textfield .MuiInputBase-input {
+    padding: 5px;
+    font-size: 12px; 
+    
+  }
+ 
+  .datepicker .react-datepicker-wrapper {
+    width: 100%; /* Adjust width as needed */
+  }
+  .datepicker .react-datepicker__input-container input {
+    width: 100%; /* Adjust width as needed */
+    padding: 8px; /* Adjust padding as needed */
+    font-size: 14px; /* Adjust font size as needed */
+  }
+  .datepicker .react-datepicker-popper {
+    z-index: 9999; /* Ensure the date picker appears above other elements */
+  }
