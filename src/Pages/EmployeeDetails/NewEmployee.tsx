@@ -153,33 +153,67 @@ const NewEmployee = (prop: IEmployeeDetails) => {
   };
   const validateField = () => {
     let message = "Please fill ";
+    let error=true
     if (employeeDetail.firstName === "") {
       message += " FirstName";
+      error=true
+    }
+    else{
+        error=false
     }
     if (employeeDetail.lastName === "") {
       message += "  Lastname";
+      error=true
     }
+    else{
+      error=false
+  }
     if (employeeDetail.gender === "") {
       message += " Gender";
+      error=true
     }
+    else{
+      error=false
+  }
     if (employeeDetail.phoneNumber === "") {
       message += "  PhoneNumber";
+      error=true
     }
+    else{
+      error=false
+  }
     if (employeeDetail.email === "") {
       message += "  E-mail";
+      error=true
     }
-    if (employeeDetail.accountType === "shared") {
+    else{
+      error=false
+  }
+    if (employeeDetail.accountType.toLocaleLowerCase() === "shared") {
       if (isValidPassword === false) {
-        message += "  ValidPassword";
+        error=true
+       message="Password Not Valid!!!"
       }
-      if (passwordsMatch === false) {
+      else{
+        error=false
+    }
+      if (passwordsMatch === true) {
+        error=true
         message = "Password Not match with Password  ";
       }
+      else{
+        error=false
     }
-
-    toast.warning(message + " these fields are Mandatoty", {
-      position: "top-center",
-    });
+    }
+      if(error===true){
+        toast.error(message + " these fields are Mandatoty", {
+          position: "top-right",
+        });
+        return
+      }
+      else{
+        return error
+      }
   };
   const newData = {...employeeDetail, phoneNumber: `+61 ${employeeDetail.phoneNumber}`,createdBy:1,createdDateTime:new Date()}
   const updateData = {...employeeDetail, phoneNumber: `+61 ${employeeDetail.phoneNumber}`,modifiedBy:1,modifiedDateTime:new Date()}
@@ -187,12 +221,12 @@ const NewEmployee = (prop: IEmployeeDetails) => {
     if (action === "Edit") {
       try {
         if (
-          employeeDetail.firstName !== "" &&
-          employeeDetail.lastName !== "" &&
-          employeeDetail.phoneNumber !== "" &&
-          employeeDetail.email !== "" &&
-          employeeDetail.accountType !== "" 
-         
+          // employeeDetail.firstName !== "" &&
+          // employeeDetail.lastName !== "" &&
+          // employeeDetail.phoneNumber !== "" &&
+          // employeeDetail.email !== "" &&
+          // employeeDetail.accountType !== "" 
+         validateField()===false
         ) {
           setEmplyeeDetails({
             ...employeeDetail,
@@ -212,7 +246,7 @@ const NewEmployee = (prop: IEmployeeDetails) => {
               console.log(error);
             });
         } else {
-          validateField();
+          //validateField();
           // toast.warning("Please fill the mandatory field",
           // {
           //   position: "top-center"
@@ -307,7 +341,7 @@ const NewEmployee = (prop: IEmployeeDetails) => {
                 margin: 1,
               }}
             >
-              <InputLabel>FirstName</InputLabel>
+              <InputLabel>First Name</InputLabel>
 
               <TextField
                 type="text"
@@ -371,7 +405,7 @@ const NewEmployee = (prop: IEmployeeDetails) => {
               margin: 1,
             }}
           >
-            <InputLabel>EmployeeId</InputLabel>
+            <InputLabel>Employee Id</InputLabel>
             <TextField
               type="text"
               className="small-textfield"
@@ -430,7 +464,7 @@ const NewEmployee = (prop: IEmployeeDetails) => {
               margin: 1,
             }}
           >
-            <InputLabel>DateOfBirth</InputLabel>
+            <InputLabel>DOB</InputLabel>
             <DatePicker
             disabled={action==="View"}
               onChange={(e) =>
@@ -506,7 +540,7 @@ const NewEmployee = (prop: IEmployeeDetails) => {
               margin: 1,
             }}
           >
-            <InputLabel>PhoneNumber</InputLabel>
+            <InputLabel>Phone Number</InputLabel>
 
             <TextField
             disabled={action==="View"}
@@ -539,7 +573,7 @@ const NewEmployee = (prop: IEmployeeDetails) => {
               margin: 1,
             }}
           >
-            <InputLabel>Email</InputLabel>
+            <InputLabel>E-mail</InputLabel>
             <TextField
             disabled={action==="View"}
               className="small-textfield"
@@ -572,7 +606,7 @@ const NewEmployee = (prop: IEmployeeDetails) => {
             margin: 1,
           }}
         >
-          <InputLabel>UserStatus</InputLabel>
+          <InputLabel>User Status</InputLabel>
           <IconButton disabled={action==="View"}
             onClick={(e) =>
               handleEditEmployee("userStatus", !userStatus, employeeDetail.id)
@@ -599,7 +633,7 @@ const NewEmployee = (prop: IEmployeeDetails) => {
             margin: 1,
           }}
         >
-          <InputLabel>AccountType</InputLabel>
+          <InputLabel>Account Type</InputLabel>
           <Box>
             <Select disabled={action==="View"}
               className="small-textfield"
@@ -670,7 +704,7 @@ const NewEmployee = (prop: IEmployeeDetails) => {
               }}
             />
 
-            <InputLabel>ConfirmPassword</InputLabel>
+            <InputLabel>Confirm Password</InputLabel>
             <TextField disabled={action==="View"}
               value={confirmPassword}
               type={showConPassword ? "text" : "password"}
