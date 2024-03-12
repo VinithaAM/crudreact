@@ -4,7 +4,10 @@ import AccountCircle from "@mui/icons-material/AccountCircle";
 import MenuIcon from "@mui/icons-material/Menu";
 import Sidebar from './Sidebar';
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+
 const Header = () => {
+  const navigation=useNavigate()
   const logo = require("../assets/logo.jpg");
   const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
   const [visible, setVisible] = useState(false);
@@ -22,7 +25,7 @@ const Header = () => {
   };
   const handleNavigation = (name:any) => {
     console.log(name)
-      //navigate("/");
+    navigation("/");
     setAnchorElUser(null);
   };
 

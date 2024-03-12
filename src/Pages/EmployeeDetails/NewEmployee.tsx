@@ -3,6 +3,7 @@ import {
   Button,
   Checkbox,
   Container,
+  Grid,
   IconButton,
   InputLabel,
   MenuItem,
@@ -11,12 +12,11 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-// import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
-// import DatePicker from "react-datepicker";
+import MaskedInput from 'react-text-mask';
 import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { Dayjs } from "dayjs";
-import { forwardRef, useEffect, useState } from "react";
+import { forwardRef, startTransition, useEffect, useState } from "react";
 import { IMaskInput } from "react-imask";
 import ToggleOffOutlinedIcon from "@mui/icons-material/ToggleOffOutlined";
 import ToggleOnOutlinedIcon from "@mui/icons-material/ToggleOnOutlined";
@@ -24,49 +24,71 @@ import "./styles.css";
 import { IEmployeeDetails, emptyObject } from "../../Types.ts/Employee";
 import { useLocation, useNavigate } from "react-router-dom";
 import { getRandomNumber } from "../../Constants/RandomNumber";
-import { createNewEmployee, updateEmployeeDetails } from "../../Services/EmployeeService";
+import {
+  createNewEmployee,
+  updateEmployeeDetails,
+} from "../../Services/EmployeeService";
 import { ToastContainer, toast } from "react-toastify";
-import PasswordChecklist from "react-password-checklist"
+import PasswordChecklist from "react-password-checklist";
 import DatePicker from "react-date-picker";
 import "react-date-picker/dist/DatePicker.css";
 import "react-calendar/dist/Calendar.css";
+import "react-toastify/dist/ReactToastify.css";
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
+import TextMaskCustom from "../../Component/MobileMasking";
 
 const NewEmployee = (prop: IEmployeeDetails) => {
-  const navigation=useNavigate();
+  const navigation = useNavigate();
   const location = useLocation();
   const state = location.state;
-  const [employeeDetail, setEmplyeeDetails] = useState<IEmployeeDetails>(emptyObject);
+  const [employeeDetail, setEmplyeeDetails] =
+    useState<IEmployeeDetails>(emptyObject);
   const [dob, setDob] = useState(null);
   const [genderValue, setGenderValue] = useState("");
   const [userStatus, setUserStatus] = useState(true);
   const [enableTwofactor, setEnableTwofactor] = useState(false);
   const [isSharedAccount, setIsSharedAccount] = useState(false);
   const [action, setAction] = useState("");
-  const [confirmPassword,setConfirmPassword]=useState('')
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [isValid, setIsValid] = useState(false);
-
+  const [passwordsMatch, setPasswordsMatch] = useState(true);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConPassword, setShowConPassword] = useState(false);
+  const [isValidPassword, setIsValidPassword] = useState(false);
   useEffect(() => {
     if (state?.options !== null && state?.options != undefined) {
       setEmplyeeDetails(state.options.param);
       setAction(state.options.action);
       setGenderValue(state.options.param.gender);
       setUserStatus(state.options.param.userStatus);
-      setConfirmPassword(state.options.param.password)
+      setConfirmPassword(state.options.param.password);
       if (state.options.param.accountType === "Shared") {
         setIsSharedAccount(true);
       }
       if (state.options.param.enableTwoFactor === true) {
         setEnableTwofactor(true);
       }
-      if(state.options.param.dateOfBirth !==undefined){
-        setDob(state.options.param.dateOfBirth)
+      if (state.options.param.dateOfBirth !== undefined) {
+        setDob(state.options.param.dateOfBirth);
       }
-      if (state.options.param.phoneNumber !== undefined && state.options.param.phoneNumber !== null) {
-        let phoneNumberParts = state.options.param.phoneNumber.split(" ");
+      if (
+        state.options.param.phoneNumber !== undefined &&
+        state.options.param.phoneNumber !== null
+      ) {
+        let phoneNumberParts = state.options.param.phoneNumber.split("+61");
         setEmplyeeDetails({
           ...state.options.param,
           phoneNumber: phoneNumberParts[1],
         });
+      }
+      if (
+        state.options.param.email !== undefined &&
+        state.options.param.email !== null
+      ) {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        const isValidEmail = emailRegex.test(state.options.param.email);
+        setIsValid(isValidEmail);
       }
     } else {
       setEmplyeeDetails({
@@ -80,12 +102,12 @@ const NewEmployee = (prop: IEmployeeDetails) => {
       if (p.id === id) {
         if (field === "dateOfBirth") {
           setDob(value);
-           var today = new Date();
+          var today = new Date();
           var birthDate = value;
-           var age_now = today.getFullYear() - birthDate.getFullYear();
-           p.age = age_now;
-           p.dateOfBirth = value;
-          console.log("date",value)
+          var age_now = today.getFullYear() - birthDate.getFullYear();
+          p.age = age_now;
+          p.dateOfBirth = value;
+          console.log("date", value);
         }
         if (field === "userStatus") {
           setUserStatus(!userStatus);
@@ -93,16 +115,18 @@ const NewEmployee = (prop: IEmployeeDetails) => {
         if (field === "enableTwoFactor") {
           setEnableTwofactor(value);
         }
-        if(field==="email"){
+        if (field === "email") {
           const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
           const isValidEmail = emailRegex.test(value);
           setIsValid(isValidEmail);
         }
-        console.log("de",employeeDetail)
+        if (field === "password") {
+          setPasswordsMatch(value === confirmPassword);
+        }
+      
         return { ...p, [field]: value };
       }
       return p;
-
     });
   };
   const handleEmployeeIdGeneration = () => {
@@ -110,15 +134,16 @@ const NewEmployee = (prop: IEmployeeDetails) => {
     const employeeNUmber = "ABC" + randomNumber;
     return employeeNUmber;
   };
- const handlecancel =()=>{
-        navigation("/employeedetails")
- }
+  const handlecancel = () => {
+    startTransition(() => {
+      navigation("/employeedetails");
+    });
+  };
   const handleChangeGender = (event: React.ChangeEvent<HTMLInputElement>) => {
     setGenderValue(event.target.value);
     handleEditEmployee("gender", event.target.value, employeeDetail.id);
   };
   const handleChangeAccountType = (event: any) => {
-    // setAccountType(event.target.value);
     if (event.target.value === "Shared") {
       setIsSharedAccount(true);
     } else {
@@ -126,97 +151,173 @@ const NewEmployee = (prop: IEmployeeDetails) => {
     }
     handleEditEmployee("accountType", event.target.value, employeeDetail.id);
   };
-  const saveValue=async ()=>{
-    // await setEmplyeeDetails((p) => {
-    //   ...employeeDetail,
-    //   createdBy: 1,
-    //   createdDateTime: new Date(),
-    //  // phoneNumber: ("+61 " + employeeDetail.phoneNumber)
-    // })
-  }
-  const handleSave = async()=>{
-    if(action==="Edit"){
-      setEmplyeeDetails({
-        ...employeeDetail,
-        modifiedBy: 1,
-        modifiedDateTime: new Date(),
-        phoneNumber: "+61 " + (employeeDetail.phoneNumber ?? "")
-      })
-        try{
-          
-          console.log(employeeDetail)
-          updateEmployeeDetails(employeeDetail).then(result=>{
-            if(result.data.status==="Success"){
-              toast(result.data.message)
-              navigation("/employeedetails")
-            }
-          }).catch(error=>{
-            console.log(error)
-          })
-        }
-        catch(error){
-          console.log(error);
-          navigation("/")
-        }
+  const validateField = () => {
+    let message = "Please fill ";
+    if (employeeDetail.firstName === "") {
+      message += " FirstName";
     }
-    else{
-      setEmplyeeDetails({
-        ...employeeDetail,
-        createdBy: 1,
-        createdDateTime: new Date(),
-        phoneNumber: "+61 " + (employeeDetail.phoneNumber ?? "")
-      })
-        try{
-          
-          console.log(employeeDetail)
-         await createNewEmployee(employeeDetail).then(result=>{
-            if(result.data.status==="Success"){
-              toast(result.data.message)
-              navigation("/employeedetails")
-            }
-          }).catch(error=>{
-            console.log(error)
-          })
-        }
-        catch(error){
-          console.log(error);
-          navigation("/")
-        }
+    if (employeeDetail.lastName === "") {
+      message += "  Lastname";
     }
-   
-  }
-  interface CustomProps {
-    onChange: (event: { target: { name: string; value: string } }) => void;
-    name: string;
-  }
-  const TextMaskCustom = forwardRef<HTMLInputElement, CustomProps>(
-    function TextMaskCustom(props, ref) {
-      const { onChange, ...other } = props;
-      return (
-        <IMaskInput
-          {...other}
-          mask="(#00) 0000-0000"
-          definitions={{ "#": /[1-9]/ }}
-          onAccept={(value) =>
-            handleEditEmployee("phoneNumber", value, employeeDetail.id)
-          }
-          overwrite
-        />
-      );
+    if (employeeDetail.gender === "") {
+      message += " Gender";
     }
-  );
+    if (employeeDetail.phoneNumber === "") {
+      message += "  PhoneNumber";
+    }
+    if (employeeDetail.email === "") {
+      message += "  E-mail";
+    }
+    if (employeeDetail.accountType === "shared") {
+      if (isValidPassword === false) {
+        message += "  ValidPassword";
+      }
+      if (passwordsMatch === false) {
+        message = "Password Not match with Password  ";
+      }
+    }
+
+    toast.warning(message + " these fields are Mandatoty", {
+      position: "top-center",
+    });
+  };
+  const newData = {...employeeDetail, phoneNumber: `+61 ${employeeDetail.phoneNumber}`,createdBy:1,createdDateTime:new Date()}
+  const updateData = {...employeeDetail, phoneNumber: `+61 ${employeeDetail.phoneNumber}`,modifiedBy:1,modifiedDateTime:new Date()}
+  const handleSave = async () => {
+    if (action === "Edit") {
+      try {
+        if (
+          employeeDetail.firstName !== "" &&
+          employeeDetail.lastName !== "" &&
+          employeeDetail.phoneNumber !== "" &&
+          employeeDetail.email !== "" &&
+          employeeDetail.accountType !== "" &&
+          isValidPassword === true &&
+          passwordsMatch
+        ) {
+          setEmplyeeDetails({
+            ...employeeDetail,
+            modifiedBy: 1,
+            modifiedDateTime: new Date(),
+            phoneNumber: "+61 " + (employeeDetail.phoneNumber ?? ""),
+          });
+          console.log(employeeDetail);
+          updateEmployeeDetails(updateData)
+            .then((result) => {
+              if (result.data.status === "Success") {
+                toast(result.data.message);
+                navigation("/employeedetails");
+              }
+            })
+            .catch((error) => {
+              console.log(error);
+            });
+        } else {
+          validateField();
+          // toast.warning("Please fill the mandatory field",
+          // {
+          //   position: "top-center"
+          // })
+        }
+      } catch (error) {
+        console.log(error);
+        navigation("/");
+      }
+    } else {
+      try {
+        if (
+          employeeDetail.firstName !== "" &&
+          employeeDetail.lastName !== "" &&
+          employeeDetail.phoneNumber !== "" &&
+          employeeDetail.email !== "" &&
+          employeeDetail.accountType !== "" &&
+          isValidPassword === true &&
+          passwordsMatch
+        ) {
+          setEmplyeeDetails({
+            ...employeeDetail,
+            createdBy: 1,
+            createdDateTime: new Date(),
+            phoneNumber: "+61 " + (employeeDetail.phoneNumber ?? ""),
+          });
+          console.log(newData);
+          await createNewEmployee(newData)
+            .then((result) => {
+              if (result.data.status === "Success") {
+                toast(result.data.message);
+                navigation("/employeedetails");
+              }
+            })
+            .catch((error) => {
+              console.log(error);
+            });
+        } else {
+          validateField();
+          // toast.warning("Please fill the mandatory field",
+          // {
+          //   position: "top-center"
+          // })
+        }
+      } catch (error) {
+        console.log(error);
+        navigation("/");
+      }
+    }
+  };
+  // interface CustomProps {
+  //   onChange: (event: { target: { name: string; value: string } }) => void;
+  //   name: string;
+  // }
+  
+  // const TextMaskCustom = forwardRef<HTMLInputElement, CustomProps>(
+  //   function TextMaskCustom(props, ref) {
+  //     const { onChange, ...other } = props;
+  //     const [maskedValue, setMaskedValue] = useState('');
+  //     const handleMaskAccept = (value: string) => {
+  //       // Apply your custom masking logic here
+  //       setMaskedValue(value);
+  //       onChange({ target: { name: props.name, value } }); // Pass the masked value to the parent component
+  //       console.log(maskedValue)
+  //     };
+  //     return (
+  //       <IMaskInput
+  //         {...other}
+  //         mask="(#00) 0000-0000"
+  //         definitions={{ "#": /[1-9]/ }}
+  //         onAccept={(value) =>
+  //           handleMaskAccept(value)
+  //         }
+  //         overwrite
+  //       />
+  //     );
+  //   }
+  // );
+
+  function handleConfirmPassword(event: any) {
+    setConfirmPassword(event);
+    setPasswordsMatch(employeeDetail.password === event);
+  }
+  const handlepasswordrule = (isvalid: boolean, passwordrule: string[]) => {
+    console.log("rule", isvalid, passwordrule);
+    setIsValidPassword(isvalid);
+  };
   return (
     <Container>
       <Box
-        sx={{ 
+        sx={{
           marginTop: 5,
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
+          maxWidth:"80%",
+          justifyContent:"center"
         }}
       >
         <Box>
-          <Typography >
+          <Typography
+          className="custom-Typography"
+            // className="custom-Typography"
+          >
             {action === "View"
               ? "View Employee Detail"
               : action === "Edit"
@@ -224,72 +325,80 @@ const NewEmployee = (prop: IEmployeeDetails) => {
               : "Add New Employee Detail"}
           </Typography>
         </Box>
-        {/* <Box
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            margin:5
-          }}
-        > */}
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "space-between",
-              margin:1
-            }}
-          >
-          
+        <Grid container spacing={2}>
+          <Grid item xs={6}>
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "space-between",
+                margin: 1,
+              }}
+            >
               <InputLabel>FirstName</InputLabel>
-           
 
-            <TextField
-              type="text"
-              required
-              className="small-textfield"
-              inputProps={{ maxLength: 100 }}
-              value={employeeDetail.firstName}
-              onChange={(e) =>
-                handleEditEmployee(
-                  "firstName",
-                  e?.target?.value,
-                  employeeDetail.id
-                )
-              }
-            />
-          </Box>
+              <TextField
+                type="text"
+                required
+                disabled={action==="View"}
+                className="small-textfield"
+                inputProps={{ maxLength: 100 }}
+                value={employeeDetail.firstName}
+                onChange={(e) =>
+                  handleEditEmployee(
+                    "firstName",
+                    e?.target?.value,
+                    employeeDetail.id
+                  )
+                }
+              />
+              {employeeDetail.firstName === "" && (
+                <span style={{ color: "red" }}>Firstname required!!!</span>
+              )}
+            </Box>
+          </Grid>
+          <Grid item xs={6}>
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "space-between",
+                margin: 1,
+              }}
+            >
+              <InputLabel>Last Name</InputLabel>
+              <TextField
+                required
+                disabled={action==="View"}
+                type="text"
+                inputProps={{ maxLength: 100 }}
+                className="small-textfield"
+                value={employeeDetail.lastName}
+                onChange={(e) =>
+                  handleEditEmployee(
+                    "lastName",
+                    e?.target?.value,
+                    employeeDetail.id
+                  )
+                }
+              />
+              {}
+              {employeeDetail.lastName === "" && (
+                <span style={{ color: "red" }}>Lastname required!!!</span>
+              )}
+            </Box>
+          </Grid>
+       
+
+        <Grid item xs={6}>
           <Box
             sx={{
               display: "flex",
               flexDirection: "column",
               justifyContent: "space-between",
-              margin:1
+              margin: 1,
             }}
           >
-            <InputLabel>Last Name</InputLabel>
-            <TextField
-            required
-              type="text"
-              inputProps={{ maxLength: 100 }}
-              className="small-textfield"
-              value={employeeDetail.lastName}
-              onChange={(e) =>
-                handleEditEmployee(
-                  "lastName",
-                  e?.target?.value,
-                  employeeDetail.id
-                )
-              }
-            />
-          </Box>
-    
-          <Box  sx={{
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "space-between",
-              margin:1
-            }}>
             <InputLabel>EmployeeId</InputLabel>
             <TextField
               type="text"
@@ -298,52 +407,72 @@ const NewEmployee = (prop: IEmployeeDetails) => {
               disabled={true}
             />
           </Box>
-          <Box  sx={{
+        </Grid>
+        <Grid item xs={6}>
+          <Box
+            sx={{
               display: "flex",
               flexDirection: "column",
               justifyContent: "space-between",
-              margin:1
-            }}>
-
+              margin: 1,
+            }}
+          >
             <InputLabel>Gender</InputLabel>
-            <Box sx={{flexBasis:"row"}}>
-            <Radio
-              checked={genderValue === "Male"}
-              onChange={handleChangeGender}
-              value="Male"
-              name="radio-buttons"
-              inputProps={{ "aria-label": "Male" }}
-            />
-            <label htmlFor="Male">Male</label>
-            <Radio
-              checked={genderValue === "Female"}
-              onChange={handleChangeGender}
-              value="Female"
-              name="radio-buttons"
-              inputProps={{ "aria-label": "Female" }}
-            />
-            <label htmlFor="Female">Female</label>
-            <Radio
-              checked={genderValue === "Others"}
-              onChange={handleChangeGender}
-              value="Others"
-              name="radio-buttons"
-              inputProps={{ "aria-label": "Others" }}
-            />
-            <label htmlFor="Others">Others</label>
+            <Box sx={{ flexBasis: "row" }}>
+              <Radio
+              disabled={action==="View"}
+                checked={genderValue === "Male"}
+                onChange={handleChangeGender}
+                value="Male"
+                name="radio-buttons"
+                inputProps={{ "aria-label": "Male" }}
+              />
+              <label htmlFor="Male">Male</label>
+              <Radio
+              disabled={action==="View"}
+                checked={genderValue === "Female"}
+                onChange={handleChangeGender}
+                value="Female"
+                name="radio-buttons"
+                inputProps={{ "aria-label": "Female" }}
+              />
+              <label htmlFor="Female">Female</label>
+              <Radio
+              disabled={action==="View"}
+                checked={genderValue === "Others"}
+                onChange={handleChangeGender}
+                value="Others"
+                name="radio-buttons"
+                inputProps={{ "aria-label": "Others" }}
+              />
+              <label htmlFor="Others">Others</label>
             </Box>
           </Box>
-      
-       
-          <Box  sx={{
+        </Grid>
+        <Grid item xs={3}>
+          <Box
+            sx={{
               display: "flex",
               flexDirection: "column",
               justifyContent: "space-evenly",
-              margin:1
-            }}>
+              margin: 1,
+            }}
+          >
             <InputLabel>DateOfBirth</InputLabel>
-            <DatePicker onChange={(e)=>handleEditEmployee("dateOfBirth",e,employeeDetail.id)} value={dob}    />
-              {/* <div style={{ overflow: 'hidden' }}>
+            <DatePicker
+            disabled={action==="View"}
+              onChange={(e) =>
+                handleEditEmployee("dateOfBirth", e, employeeDetail.id)
+              }
+              value={dob}
+              calendarClassName="customCalendar"
+              dayPlaceholder="dd"
+              monthPlaceholder="MM"
+              yearPlaceholder="yyyy"
+              maxDate={new Date()}
+              clearIcon={false}
+            />
+            {/* <div style={{ overflow: 'hidden' }}>
             <LocalizationProvider dateAdapter={AdapterDayjs} >
               <DemoContainer components={["DatePicker"]} >
                 <DatePicker className="datepicker"
@@ -361,35 +490,54 @@ const NewEmployee = (prop: IEmployeeDetails) => {
             </LocalizationProvider>
             </div> */}
           </Box>
-
-          <Box sx={{
+        </Grid>
+        <Grid item xs={2}>
+          <Box
+            sx={{
               display: "flex",
               flexDirection: "column",
               justifyContent: "space-evenly",
-              margin:1}}>
+              margin: 1,
+            }}
+          >
             <InputLabel>Age</InputLabel>
-            <TextField disabled={true} value={employeeDetail.age} className="verysmall-textfield"/>
+            <TextField
+              disabled={true}
+              value={employeeDetail.age}
+              className="verysmall-textfield"
+            />
           </Box>
-       
-    
-          <Box sx={{
+        </Grid>
+        <Grid item xs={3}>
+          <Box
+            sx={{
               display: "flex",
               flexDirection: "column",
               justifyContent: "space-evenly",
-              margin:1}}
-              >
+              margin: 1,
+            }}
+          >
             <InputLabel>Code</InputLabel>
-            <TextField disabled defaultValue={"+61"} className="verysmall-textfield" />
+            <TextField
+              disabled
+              defaultValue={"+61"}
+              className="verysmall-textfield"
+            />
           </Box>
-
-          <Box sx={{
+        </Grid>
+        <Grid item xs={3}>
+          <Box
+            sx={{
               display: "flex",
               flexDirection: "column",
               justifyContent: "space-evenly",
-              margin:1}}>
+              margin: 1,
+            }}
+          >
             <InputLabel>PhoneNumber</InputLabel>
 
             <TextField
+            disabled={action==="View"}
               value={employeeDetail.phoneNumber}
               className="small-textfield"
               onChange={(event) =>
@@ -399,93 +547,123 @@ const NewEmployee = (prop: IEmployeeDetails) => {
                   employeeDetail.id
                 )
               }
-              // InputProps={{
-              //   inputComponent: TextMaskCustom as any,
-              // }}
+              InputProps={{
+                inputComponent: TextMaskCustom as any,
+              }}
             />
+            {employeeDetail.phoneNumber === "" && (
+              <span style={{ color: "red", fontSize: 12 }}>
+                PhoneNumber required!!!
+              </span>
+            )}
           </Box>
-      
-  
-          <Box sx={{
+        </Grid>
+        <Grid item xs={4}>
+          <Box
+            sx={{
               display: "flex",
               flexDirection: "column",
               justifyContent: "space-evenly",
-              margin:1}} >
+              margin: 1,
+            }}
+          >
             <InputLabel>Email</InputLabel>
-            <TextField className="small-textfield"
+            <TextField
+            disabled={action==="View"}
+              className="small-textfield"
               value={employeeDetail.email}
               onChange={(e) =>
                 handleEditEmployee("email", e?.target?.value, employeeDetail.id)
               }
+              inputProps={{ maxLength: 80 }}
             />
-            {!isValid && 
-        <span style={{ color: 'red' }}>Invalid email address</span>
-      }
-          </Box>
-          <Box sx={{
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "space-evenly",
-              margin:1}}>
-            <InputLabel>UserStatus</InputLabel>
-            <IconButton
-              onClick={(e) =>
-                handleEditEmployee("userStatus", !userStatus, employeeDetail.id)
-              }
-              //onChange={(e)=>handleEditEmployee("userStatus",(!userStatus),employeeDetail.id)}
-            >
-              {userStatus ? (
-                <ToggleOnOutlinedIcon
-                  style={{ color: "green", fontSize: 50 }}
-                />
-              ) : (
-                <ToggleOffOutlinedIcon style={{ color: "red", fontSize: 50 }} />
+            <div style={{ flexDirection: "row" }}>
+              {employeeDetail.email === "" && (
+                <span style={{ color: "red", fontSize: 12 }}>
+                  E-mail required!!!{" "}
+                </span>
               )}
-              <Typography variant="body1" style={{ marginLeft: 8 }}>
-                {userStatus ? "Enabled" : "Disabled"}
-              </Typography>
-            </IconButton>
+              {!isValid && (
+                <span style={{ color: "red", fontSize: 12 }}>
+                  Invalid email address
+                </span>
+              )}
+            </div>
           </Box>
-        
-    
-          <Box sx={{
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "space-evenly",
-              margin:1}}>
-            <InputLabel>AccountType</InputLabel>
-            <Box>
-              <Select className="small-textfield"
-                style={{
-                  width: "120%",
-                  borderBottom: "1px ",
-                  borderBottomColor: "#EEEFE9",
-                  borderTop: "1px ",
-                  borderTopColor: "#d6d3ce",
-                  textAlign: "left",
-                }}
-                value={employeeDetail.accountType}
-                labelId="demo-simple-select-label"
-                id="demo-simple-select"
-                onChange={(e) => handleChangeAccountType(e)}
-              >
-                <MenuItem value={"Shared"}>Shared</MenuItem>
-                <MenuItem value={"Personal"}>Personal</MenuItem>
-              </Select>
-            </Box>
+        </Grid>
+        <Grid item xs={4}>
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "space-evenly",
+            margin: 1,
+          }}
+        >
+          <InputLabel>UserStatus</InputLabel>
+          <IconButton disabled={action==="View"}
+            onClick={(e) =>
+              handleEditEmployee("userStatus", !userStatus, employeeDetail.id)
+            }
+            //onChange={(e)=>handleEditEmployee("userStatus",(!userStatus),employeeDetail.id)}
+          >
+            {userStatus ? (
+              <ToggleOnOutlinedIcon style={{ color: "green", fontSize: 50 }} />
+            ) : (
+              <ToggleOffOutlinedIcon style={{ color: "red", fontSize: 50 }} />
+            )}
+            <Typography variant="body1" style={{ marginLeft: 8 }}>
+              {userStatus ? "Enabled" : "Disabled"}
+            </Typography>
+          </IconButton>
+        </Box>
+        </Grid>
+        <Grid item xs={6}>
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "space-evenly",
+            margin: 1,
+          }}
+        >
+          <InputLabel>AccountType</InputLabel>
+          <Box>
+            <Select disabled={action==="View"}
+              className="small-textfield"
+              style={{
+                width: "120%",
+                borderBottom: "1px ",
+                borderBottomColor: "#EEEFE9",
+                borderTop: "1px ",
+                borderTopColor: "#d6d3ce",
+                textAlign: "left",
+              }}
+              value={employeeDetail.accountType}
+              labelId="demo-simple-select-label"
+              id="demo-simple-select"
+              onChange={(e) => handleChangeAccountType(e)}
+            >
+              <MenuItem value={"Shared"}>Shared</MenuItem>
+              <MenuItem value={"Personal"}>Personal</MenuItem>
+            </Select>
           </Box>
-     
-        {isSharedAccount && (
+        </Box>
+        </Grid>
+        <Grid item xs={6}>
+                  {isSharedAccount && (
           <Box
             sx={{
               display: "flex",
-              flexDirection:"column",
+              flexDirection: "column",
               justifyContent: "space-between",
               alignItems: "center",
             }}
           >
             <InputLabel>Password</InputLabel>
-            <TextField className="small-textfield"
+            <TextField disabled={action==="View"}
+              className="small-textfield"
+              type={showPassword ? "text" : "password"}
               value={employeeDetail.password}
               onChange={(e) =>
                 handleEditEmployee(
@@ -494,56 +672,119 @@ const NewEmployee = (prop: IEmployeeDetails) => {
                   employeeDetail.id
                 )
               }
+              inputProps={{ maxLength: 25 }}
+              InputProps={{
+                endAdornment: (
+                  <IconButton
+                    onClick={() => setShowPassword(!showPassword)}
+                    edge="end"
+                  >
+                    {showPassword ? (
+                      <VisibilityIcon style={{ fontSize: 12 }} />
+                    ) : (
+                      <VisibilityOffIcon style={{ fontSize: 12 }} />
+                    )}
+                  </IconButton>
+                ),
+              }}
             />
-           
+            <PasswordChecklist
+              rules={["minLength", "specialChar", "number", "capital"]}
+              minLength={8}
+              value={employeeDetail.password}
+              maxLength={20}
+              onChange={(isValid: boolean, failedRules: string[]) => {
+                handlepasswordrule(isValid, failedRules);
+              }}
+            />
+
             <InputLabel>ConfirmPassword</InputLabel>
-            <TextField value={confirmPassword} className="small-textfield"/>  <PasswordChecklist
-				rules={["minLength","specialChar","number","capital","match","notEmpty"]}
-				minLength={8}
-				value={employeeDetail.password}
-				//valueAgain={confirmPassword}
-				onChange={(isValid) => {}}
-			/>
-      <Box sx={{
-              display: "flex",
-              flexDirection: "row",
-              justifyContent: "space-evenly",
-              margin:1}}>
-            <Checkbox
-              checked={enableTwofactor}
-              onChange={(e) =>
-                handleEditEmployee(
-                  "enableTwoFactor",
-                  e.target.checked,
-                  employeeDetail.id
-                )
-              }
+            <TextField disabled={action==="View"}
+              value={confirmPassword}
+              type={showConPassword ? "text" : "password"}
+              className="small-textfield"
+              onChange={(e) => handleConfirmPassword(e.target.value)}
+              InputProps={{
+                endAdornment: (
+                  <IconButton
+                    onClick={() => setShowConPassword(!showConPassword)}
+                    edge="end"
+                  >
+                    {showConPassword ? (
+                      <VisibilityIcon style={{ fontSize: 12 }} />
+                    ) : (
+                      <VisibilityOffIcon style={{ fontSize: 12 }} />
+                    )}
+                  </IconButton>
+                ),
+              }}
+              inputProps={{ maxLength: 25 }}
             />
-            <InputLabel>Enable TwoFactor Authendication</InputLabel>
-          </Box>
+            {!passwordsMatch && (
+              <span style={{ color: "red" }}>Password not Match!!</span>
+            )}
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "row",
+                justifyContent: "space-evenly",
+                margin: 1,
+              }}
+            >
+              <Checkbox disabled={action==="View"}
+                checked={enableTwofactor}
+                onChange={(e) =>
+                  handleEditEmployee(
+                    "enableTwoFactor",
+                    e.target.checked,
+                    employeeDetail.id
+                  )
+                }
+              />
+              <InputLabel>Enable TwoFactor Authendication</InputLabel>
+            </Box>
           </Box>
         )}
+        </Grid>
+                <Grid item xs={6}>
 
         <Box>
           <Button
             variant="contained"
-            style={{ margin: 5, padding: 5 ,textTransform:"capitalize",backgroundColor:"green"}}
+            style={{
+              margin: 5,
+              padding: 5,
+              textTransform: "capitalize",
+              backgroundColor: "green",
+            }}
             disabled={action === "View"}
             onClick={handleSave}
           >
             {action === "View" ? "Save" : action === "Edit" ? "Update" : "Save"}
           </Button>
-          <Button variant="contained"  onClick={handlecancel} style={{ margin: 5, padding: 5,textTransform:"capitalize",backgroundColor:"gray" }}>
+          <Button
+            variant="contained"
+            onClick={handlecancel}
+            style={{
+              margin: 5,
+              padding: 5,
+              textTransform: "capitalize",
+              backgroundColor: "gray",
+            }}
+          >
             Cancel
           </Button>
         </Box>
+        </Grid>
+        
+</Grid>
       </Box>
       <ToastContainer
-      className="toast-container"
-      toastClassName="custom-toast"
-      bodyClassName="custom-toast-body"
-      progressClassName="custom-toast-progress" 
-   />
+        className="toast-container"
+        toastClassName="custom-toast"
+        bodyClassName="custom-toast-body"
+        progressClassName="custom-toast-progress"
+      />
     </Container>
   );
 };

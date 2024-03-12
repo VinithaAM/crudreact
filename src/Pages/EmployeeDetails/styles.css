@@ -1,11 +1,6 @@
-.inpuLabel{
-    font-family: serif;
-    font-size: large;
-    font-weight: 900;
-    color: "revert-layer";
-}
+
 .custom-toast {
-    background-color: #8ae482;
+    background-color: #82df7a;
     color: #070606;
   }
   
@@ -45,3 +40,40 @@
   .datepicker .react-datepicker-popper {
     z-index: 9999; /* Ensure the date picker appears above other elements */
   }
+  .custom-Typography .css-ahj2mt-MuiTypography-root{
+    font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    font-size: 100;
+    font-weight:900;
+    color: blue;
+    margin: 0;
+    line-height:0;
+    letter-spacing:0;
+    justify-content: center;
+    /* Add any other styles as needed */
+  }
+
+  .customHeader .MuiDataGrid-columnHeaderTitle {
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    font-weight: 0;
+    justify-content: center;
+    color: rgb(10, 10, 10);
+    font-size: large;
+    font-weight: bold;
+    font-family: 'Times New Roman', Times, serif;
+}
+.customCalendar{
+  padding: auto;
+  width: 15px;
+  border-radius: 5px;
+}
+.activeCell {
+  color: green;
+  font-weight: bold;
+}
+
+.inactiveCell {
+  color: red;
+  font-weight: bold; 
+}

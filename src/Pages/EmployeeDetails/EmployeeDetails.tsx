@@ -1,5 +1,5 @@
 import React, { startTransition, useEffect, useState } from "react";
-import { DataGrid, GridColDef } from "@mui/x-data-grid";
+import { DataGrid, GridColDef, GridToolbar } from "@mui/x-data-grid";
 // GridToolbar, GridValueGetterParams, InputAdornment, InputLabel,
 import {
   Box,
@@ -9,13 +9,14 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
+  Grid,
   IconButton,
   InputAdornment,
   TextField,
   Typography,
 } from "@mui/material";
 // import { DataGridPro } from '@mui/x-data-grid-pro';
-import { Search } from "@mui/icons-material";
+import { Clear, Search } from "@mui/icons-material";
 import { IEmployeeDetails } from "../../Types.ts/Employee";
 import {
   deleteEmployeeDetails,
@@ -26,6 +27,7 @@ import VisibilityIcon from "@mui/icons-material/Visibility";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { NavigateOptions, useNavigate } from "react-router-dom";
 import { format } from "date-fns";
+import "./styles.css";
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 
 const EmployeeDetails = () => {
@@ -43,6 +45,8 @@ const EmployeeDetails = () => {
       headerName: "Full Name",
       width: 200,
       editable: false,
+      headerClassName: "customHeader",
+      flex:1,
       valueGetter: (params) => {
         return `${params.row.firstName || ''} ${params.row.lastName || ''}`.trim();
       },},
@@ -50,45 +54,63 @@ const EmployeeDetails = () => {
       field: "employeeId",
       headerName: "Employee Id",
       width: 120,
-      editable: true,
+      editable: false,
+      headerClassName: "customHeader",
+      flex:1
     },
     {
       field: "gender",
       headerName: "Gender",
       width: 150,
       editable: false,
+      headerClassName: "customHeader",
+      flex:1
     },
     {
       field: "phoneNumber",
       headerName: "Phone Number",
       width: 150,
       editable: false,
+      headerClassName: "customHeader",
+      flex:1
     },
     {
       field: "email",
       headerName: "E-Mail",
       width: 150,
       editable: false,
+      headerClassName: "customHeader",
+      flex:1
     },
     {
       field: "accountType",
       headerName: "Account Type",
       width: 150,
       editable: false,
+      headerClassName: "customHeader",
+      flex:1
     },
     {
       field: "dateOfBirth",
       headerName: "DOB",
       width: 150,
       editable: false,
-      valueFormatter:(params) => format(params.value,"dd/MM/yyyy"),
+      // cellClassName: (params) => (params.value===true ? 'activeCell' : 'inactiveCell'),
+      // valueFormatter:(param)=>param.value===true?"Active":"In Active",
+      renderCell:(param)=>format(param.value,"dd-MM-yyyy"),
+       //valueFormatter:(params) => format(params.value,"dd-MM-yyyy"),
+      headerClassName: "customHeader",
+      flex:1
     },
     {
       field: "Action",
       headerName: "Action",
-      width: 250,
+      width: 200,
       editable: false,
+      flex:1,
       sortable: false,
+      headerAlign:"center",
+      headerClassName: "customHeader",
       renderCell: (params) => {
         return (
           <>
@@ -120,15 +142,6 @@ const EmployeeDetails = () => {
         );
       },
     },
-    // {
-    //   field: 'fullName',
-    //   headerName: 'Phone Number',
-    //   description: 'This column has a value getter and is not sortable.',
-    //   sortable: false,
-    //   width: 160,
-    //   valueGetter: (params: GridValueGetterParams) =>
-    //     `${params.row.firstName || ''} ${params.row.lastName || ''}`,
-    // },
   ];
   const handleButtonClick = (param: IEmployeeDetails, action: string) => {
     startTransition(() => {
@@ -139,9 +152,8 @@ const EmployeeDetails = () => {
       navigation("/employeedetail/new", { state: { options } });
     });
   };
-  const [employeeDetails, setEmployeeDetails] = useState<IEmployeeDetails[]>(
-    []
-  );
+  const [employeeDetails, setEmployeeDetails] = useState<IEmployeeDetails[]>([]);
+  const [searchEmployeeDetails, setSearchEmployeeDetails] = useState<IEmployeeDetails[]>([]);
   const [deleteItem, setDeleteItem] = useState<IEmployeeDetails>();
   useEffect(() => {
     getEmployeeDetails();
@@ -176,37 +188,64 @@ const EmployeeDetails = () => {
   //   { id: 9, lastName: 'Roxie', firstName: 'Harvey', age: 14,phonenumber:'123',email:'sample@123',accounttype:'personal',DOB:'20-11-2022' },
   // ];
   const CustomToolbar = () => (
-    // <GridToolbar>
-    <TextField
-      value={searchText}
-      onChange={(event) => requestSearch(event.target.value)}
-      placeholder="Search..."
-      InputProps={{
-        startAdornment: (
-          <InputAdornment position="start">
-            <Search />
-          </InputAdornment>
-        ),
-        endAdornment: (
-          <InputAdornment position="end">
-            <button onClick={clearSearch}>Clear</button>
-          </InputAdornment>
-        ),
-      }}
-    />
-    // </GridToolbar>
+   <GridToolbar>
+   <TextField
+  value={searchText}
+  onChange={(event) => requestSearch(event.target.value)}
+  placeholder="Search..."
+  InputProps={{
+    startAdornment: (
+      <InputAdornment position="start">
+        <Search />
+      </InputAdornment>
+    ),
+    endAdornment: (
+      <InputAdornment position="end">
+        <IconButton onClick={clearSearch}>
+          <Clear />
+        </IconButton>
+      </InputAdornment>
+    ),
+  }}
+/>
+    </GridToolbar>
   );
   const [searchText, setSearchText] = React.useState("");
   const [open, setOpen] = React.useState(false);
 
   const requestSearch = (searchValue: any) => {
     console.log("filter", searchValue);
-    setSearchText(searchValue);
+    if(searchValue !==""){
+      setSearchText(searchValue);
+      const filteredRows = employeeDetails.filter(row =>
+      
+        row.gender?.toLowerCase().includes(searchValue.toLowerCase()) ||
+        row.firstName?.toLowerCase().includes(searchValue.toLowerCase()) ||
+         (format((row.dateOfBirth.toString().split("T"))[0],'dd-MM-yyyy').toLowerCase().includes(searchValue.toLowerCase())) ||
+        row.lastName?.toString().toLowerCase().includes(searchValue.toLowerCase()) ||
+        row.employeeId?.toLowerCase().includes(searchValue.toLowerCase()) ||
+        row.phoneNumber?.toLowerCase().includes(searchValue.toLowerCase()) ||
+        row.email?.toLowerCase().includes(searchValue.toLowerCase()) ||
+        row.accountType?.toLowerCase().includes(searchValue.toLowerCase()) 
+        
+      );
+      // const filteredRows = employeeDetails.filter(row =>
+      //   Object.values(row).some(value =>
+      //     String(value).toLowerCase().includes(searchValue.toLowerCase())
+      //   )
+      // );
+      setSearchEmployeeDetails(filteredRows);
+    }
+    else{
+      setSearchText("")
+      setSearchEmployeeDetails([])
+    }
     // Perform search logic here
   };
 
   const clearSearch = () => {
     setSearchText("");
+    setSearchEmployeeDetails([])
   };
   const handleClickOpen = (param: IEmployeeDetails) => {
     setOpen(true);
@@ -216,8 +255,7 @@ const EmployeeDetails = () => {
   const handleClose = () => {
     setOpen(false);
   };
-  const handleDelete = (param: any) => {
-    console.log("param", deleteItem);
+  const handleDelete = () => {
     try {
         deleteEmployeeDetails(deleteItem?.id ? deleteItem.id : 0)
         .then((result) => {
@@ -241,6 +279,7 @@ const EmployeeDetails = () => {
     navigation("/employeedetail/new");
     })
   }
+ 
   return (
     <Box>
       <Box>
@@ -255,13 +294,32 @@ const EmployeeDetails = () => {
             alignItems: "center",
           }}
         >
+             <TextField
+  value={searchText}
+  onChange={(event) => requestSearch(event.target.value)}
+  placeholder="Search..."
+  InputProps={{
+    startAdornment: (
+      <InputAdornment position="start">
+        <Search />
+      </InputAdornment>
+    ),
+    endAdornment: (
+      <InputAdornment position="end">
+        <IconButton onClick={clearSearch}>
+          <Clear />
+        </IconButton>
+      </InputAdornment>
+    ),
+  }}
+/>
           <Typography display={"flex"} justifyContent={"flex-start"}>
-            TotalCount:{employeeDetails.length}
+            TotalCount:{searchEmployeeDetails.length>0?searchEmployeeDetails.length:employeeDetails.length}
           </Typography>
           
           <Button
-            variant="text"
-            startIcon={<AddCircleOutlineIcon />}
+            variant="outlined"
+            //startIcon={<AddCircleOutlineIcon />}
             style={{
               margin: 15,
               alignItems: "flex-end",
@@ -277,10 +335,10 @@ const EmployeeDetails = () => {
           </Button>
         </Box>
       </Box>
-
-      <DataGrid
-        sx={{ margin: 1, maxWidth: "100%", maxHeight: "10%" }}
-        rows={employeeDetails}
+   
+<DataGrid
+        sx={{ margin: 1, border:2 ,position:"relative"}}
+        rows={searchText !==""?searchEmployeeDetails:employeeDetails}
         columns={columns}
         initialState={{
           pagination: {
@@ -289,17 +347,19 @@ const EmployeeDetails = () => {
             },
           },
         }}
-        components={{
-          Toolbar: CustomToolbar,
-        }}
-        // pageSizeOptions={[10]}
+        // components={{
+        //   Toolbar: CustomToolbar,
+        // }}
+         pageSizeOptions={[10]}
         // checkboxSelection
         disableColumnMenu
         disableColumnSelector
         disableDensitySelector
-        disableVirtualization
-        //disableRowSelectionOnClick={false}
+        //disableVirtualization
+        disableRowSelectionOnClick={true}
       />
+
+     
       <Dialog
         sx={{ boxSizing: "80%" }}
         open={open}
@@ -316,7 +376,7 @@ const EmployeeDetails = () => {
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={(event) => handleDelete(event)}>Ok</Button>
+          <Button onClick={handleDelete}>Ok</Button>
           <Button onClick={handleClose} autoFocus>
             Cancel
           </Button>
