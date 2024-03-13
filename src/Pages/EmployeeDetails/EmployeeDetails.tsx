@@ -337,8 +337,8 @@ const EmployeeDetails = () => {
           </Typography>
 
           <Button
-            variant="outlined"
-            //startIcon={<AddCircleOutlineIcon />}
+            variant="contained"
+            // startIcon={<AddCircleOutlineIcon />}
             style={{
               margin: 15,
               alignItems: "flex-end",
@@ -373,11 +373,12 @@ const EmployeeDetails = () => {
         //   Toolbar: CustomToolbar,
         // }}
         pageSizeOptions={[10]}
+        
         // checkboxSelection
         disableColumnMenu
         disableColumnSelector
         disableDensitySelector
-        //disableVirtualization
+        disableVirtualization
         disableRowSelectionOnClick={true}
         
       />

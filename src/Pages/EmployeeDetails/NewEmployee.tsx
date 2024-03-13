@@ -109,17 +109,14 @@ const NewEmployee = (prop: IEmployeeDetails) => {
       if (p.id === id) {
         if (field === "dateOfBirth") {
           setDob(value);
-          console.log("date", value);
           var today = new Date();
           var birthDate = value.$d;
           var age_now = today.getFullYear() - birthDate.getFullYear();
           p.age = age_now;
           p.dateOfBirth = value.$d;
-          
         }
         if (field === "userStatus") {
           setUserStatus(!userStatus);
-          console.log("to", value);
         }
         if (field === "enableTwoFactor") {
           setEnableTwofactor(value);
@@ -128,6 +125,11 @@ const NewEmployee = (prop: IEmployeeDetails) => {
           const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
           const isValidEmail = emailRegex.test(value);
           setIsValid(isValidEmail);
+        }
+        if(field ==="firstName"){
+          const nameRegex=/[^a-zA-Z\s\d!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/g;
+          const i = nameRegex.test(value);
+          console.log("email",i)
         }
         if (field === "password") {
           setPasswordsMatch(value === confirmPassword);
@@ -507,7 +509,7 @@ const NewEmployee = (prop: IEmployeeDetails) => {
               </Box>
             </Box>
           </Grid>
-          <Grid item xs={5}>
+          <Grid item xs={4}>
             <Box
               sx={{
                 display: "flex",
@@ -533,8 +535,8 @@ const NewEmployee = (prop: IEmployeeDetails) => {
               clearIcon={false}
             /> */}
 
-              <LocalizationProvider dateAdapter={AdapterDayjs}>
-                <DemoContainer components={["DatePicker"]}>
+              <LocalizationProvider dateAdapter={AdapterDayjs} >
+                <DemoContainer components={["DatePicker"]} sx={{paddingTop: 0,}}>
                   <DatePicker
                   className="custom-datepicker"
                     slotProps={{ textField: { size: "small" } }}
@@ -553,7 +555,7 @@ const NewEmployee = (prop: IEmployeeDetails) => {
               </LocalizationProvider>
             </Box>
           </Grid>
-          <Grid item xs={1}>
+          <Grid item xs={2}>
             <Box
               sx={{
                 display: "flex",
