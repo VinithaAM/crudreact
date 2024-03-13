@@ -105,7 +105,7 @@ const NewEmployee = (prop: IEmployeeDetails) => {
       if (p.id === id) {
         if (field === "dateOfBirth") {
           setDob(value);
-          console.log("date", value)
+          console.log("date",value)
           var today = new Date();
           var birthDate = value.$d;
           var age_now = today.getFullYear() - birthDate.getFullYear();
@@ -127,7 +127,7 @@ const NewEmployee = (prop: IEmployeeDetails) => {
         if (field === "password") {
           setPasswordsMatch(value === confirmPassword);
         }
-
+      
         return { ...p, [field]: value };
       }
       return p;
@@ -157,70 +157,70 @@ const NewEmployee = (prop: IEmployeeDetails) => {
   };
   const validateField = () => {
     let message = "Please fill ";
-    let error = true
+    let error=true
     if (employeeDetail.firstName === "") {
       message += " FirstName";
-      error = true
+      error=true
     }
-    else {
-      error = false
+    else{
+        error=false
     }
     if (employeeDetail.lastName === "") {
       message += "  Lastname";
-      error = true
+      error=true
     }
-    else {
-      error = false
-    }
+    else{
+      error=false
+  }
     if (employeeDetail.gender === "") {
       message += " Gender";
-      error = true
+      error=true
     }
-    else {
-      error = false
-    }
+    else{
+      error=false
+  }
     if (employeeDetail.phoneNumber === "") {
       message += "  PhoneNumber";
-      error = true
+      error=true
     }
-    else {
-      error = false
-    }
+    else{
+      error=false
+  }
     if (employeeDetail.email === "") {
       message += "  E-mail";
-      error = true
+      error=true
     }
-    else {
-      error = false
-    }
+    else{
+      error=false
+  }
     if (employeeDetail.accountType.toLocaleLowerCase() === "shared") {
       if (isValidPassword === false) {
-        error = true
-        message = "Password Not Valid!!!"
+        error=true
+       message="Password Not Valid!!!"
       }
-      else {
-        error = false
-      }
+      else{
+        error=false
+    }
       if (passwordsMatch === true) {
-        error = true
+        error=true
         message = "Password Not match with Password  ";
       }
-      else {
-        error = false
+      else{
+        error=false
+    }
+    }
+      if(error===true){
+        toast.error(message + " these fields are Mandatoty", {
+          position: "top-right",
+        });
+        return
       }
-    }
-    if (error === true) {
-      toast.error(message + " these fields are Mandatoty", {
-        position: "top-right",
-      });
-      return
-    }
-    else {
-      return error
-    }
+      else{
+        return error
+      }
   };
-  const newData = { ...employeeDetail, phoneNumber: `+61 ${employeeDetail.phoneNumber}`, createdBy: 1, createdDateTime: new Date() }
-  const updateData = { ...employeeDetail, phoneNumber: `+61 ${employeeDetail.phoneNumber}`, modifiedBy: 1, modifiedDateTime: new Date() }
+  const newData = {...employeeDetail, phoneNumber: `+61 ${employeeDetail.phoneNumber}`,createdBy:1,createdDateTime:new Date()}
+  const updateData = {...employeeDetail, phoneNumber: `+61 ${employeeDetail.phoneNumber}`,modifiedBy:1,modifiedDateTime:new Date()}
   const handleSave = async () => {
     if (action === "Edit") {
       try {
@@ -230,7 +230,7 @@ const NewEmployee = (prop: IEmployeeDetails) => {
           // employeeDetail.phoneNumber !== "" &&
           // employeeDetail.email !== "" &&
           // employeeDetail.accountType !== "" 
-          validateField() === false
+         validateField()===false
         ) {
           setEmplyeeDetails({
             ...employeeDetail,
@@ -301,7 +301,7 @@ const NewEmployee = (prop: IEmployeeDetails) => {
       }
     }
   };
-
+  
 
   function handleConfirmPassword(event: any) {
     setConfirmPassword(event);
@@ -312,7 +312,7 @@ const NewEmployee = (prop: IEmployeeDetails) => {
     setIsValidPassword(isvalid);
   };
   return (
-    <Container sx={{ display: "flex",justifyContent: "center"}} >
+    <Container>
       <Box 
         sx={{
           marginTop: 5,
@@ -501,7 +501,7 @@ const NewEmployee = (prop: IEmployeeDetails) => {
             </div>
           </Box>
         </Grid>
-        <Grid item xs={4}>
+        <Grid item xs={2}>
           <Box
             sx={{
               display: "flex",
@@ -518,7 +518,7 @@ const NewEmployee = (prop: IEmployeeDetails) => {
             />
           </Box>
         </Grid>
-        <Grid item xs={0}>
+        <Grid item xs={3}>
           <Box
             sx={{
               display: "flex",
@@ -535,7 +535,7 @@ const NewEmployee = (prop: IEmployeeDetails) => {
             />
           </Box>
         </Grid>
-        <Grid item xs={4}>
+        <Grid item xs={3}>
           <Box
             sx={{
               display: "flex",
@@ -568,7 +568,7 @@ const NewEmployee = (prop: IEmployeeDetails) => {
             )}
           </Box>
         </Grid>
-        <Grid item xs={6}>
+        <Grid item xs={4}>
           <Box
             sx={{
               display: "flex",
@@ -601,9 +601,7 @@ const NewEmployee = (prop: IEmployeeDetails) => {
             </div>
           </Box>
         </Grid>
-        <Grid item xs={4} sx={{
-            display: "flex",
-            alignItems: "center"}}>
+        <Grid item xs={4}>
         <Box
           sx={{
             display: "flex",
@@ -797,7 +795,7 @@ const NewEmployee = (prop: IEmployeeDetails) => {
         bodyClassName="custom-toast-body"
         progressClassName="custom-toast-progress"
       />
-    </Container >
+    </Container>
   );
 };
 

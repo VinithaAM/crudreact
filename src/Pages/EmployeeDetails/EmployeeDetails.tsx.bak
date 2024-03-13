@@ -281,9 +281,9 @@ const EmployeeDetails = () => {
   }
  
   return (
-    <Box >
+    <Box>
       <Box>
-        <Typography  sx={{fontWeight:"900" }}display={"flex"} justifyContent={"center"}>
+        <Typography sx={{fontWeight:"900" }}display={"flex"} justifyContent={"center"}>
           Employee Details
         </Typography>
 
@@ -338,7 +338,7 @@ const EmployeeDetails = () => {
    
 <DataGrid
         sx={{ margin: 1, border:2 ,position:"relative"}}
-         rows={searchText !==""?searchEmployeeDetails:employeeDetails}
+        rows={searchText !==""?searchEmployeeDetails:employeeDetails}
         columns={columns}
         initialState={{
           pagination: {
@@ -358,7 +358,8 @@ const EmployeeDetails = () => {
         //disableVirtualization
         disableRowSelectionOnClick={true}
       />
-    
+
+     
       <Dialog
         sx={{ boxSizing: "80%" }}
         open={open}

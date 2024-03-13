@@ -77,6 +77,3 @@
   color: red;
   font-weight: bold; 
 }
-.css-vhiuen-MuiInputBase-root-MuiOutlinedInput-root-MuiSelect-root{
-  width: 200px !important;
-}
