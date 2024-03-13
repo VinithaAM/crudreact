@@ -8,7 +8,7 @@ import { useNavigate } from 'react-router-dom';
 
 const Header = () => {
   const navigation=useNavigate()
-  const logo = require("../assets/logo.jpg");
+  const logo = require("../assets/logo-design.jpg");
   const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
   const [visible, setVisible] = useState(false);
   const showDrawer = () => {
@@ -66,9 +66,9 @@ const Header = () => {
               <img
                 src={logo}
                 style={{
-                  maxWidth:50,
-                  maxHeight:50,
-                  position: "relative",
+                  maxWidth:200,
+                  maxHeight:60,
+                  position: "static",
                   alignContent: "center",
                   justifyContent: "center",
                 }}
@@ -107,7 +107,7 @@ const Header = () => {
             </Box>
             <Box sx={{ display: { xs: "flex", md: "none" } }}>
               <IconButton size="large" aria-label="show more" color="inherit">
-                <MoreIcon />
+                {/* <MoreIcon /> */}
               </IconButton>
             </Box>
           </Toolbar>

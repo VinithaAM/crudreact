@@ -28,7 +28,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import { NavigateOptions, useNavigate } from "react-router-dom";
 import { format } from "date-fns";
 import "./styles.css";
-import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 
 const EmployeeDetails = () => {
   const navigation = useNavigate();
@@ -46,17 +46,20 @@ const EmployeeDetails = () => {
       width: 200,
       editable: false,
       headerClassName: "customHeader",
-      flex:1,
+      flex: 1,
       valueGetter: (params) => {
-        return `${params.row.firstName || ''} ${params.row.lastName || ''}`.trim();
-      },},
+        return `${params.row.firstName || ""} ${
+          params.row.lastName || ""
+        }`.trim();
+      },
+    },
     {
       field: "employeeId",
       headerName: "Employee Id",
       width: 120,
       editable: false,
       headerClassName: "customHeader",
-      flex:1
+      flex: 1,
     },
     {
       field: "gender",
@@ -64,7 +67,7 @@ const EmployeeDetails = () => {
       width: 150,
       editable: false,
       headerClassName: "customHeader",
-      flex:1
+      flex: 1,
     },
     {
       field: "phoneNumber",
@@ -72,7 +75,7 @@ const EmployeeDetails = () => {
       width: 150,
       editable: false,
       headerClassName: "customHeader",
-      flex:1
+      flex: 1,
     },
     {
       field: "email",
@@ -80,7 +83,7 @@ const EmployeeDetails = () => {
       width: 150,
       editable: false,
       headerClassName: "customHeader",
-      flex:1
+      flex: 1,
     },
     {
       field: "accountType",
@@ -88,7 +91,7 @@ const EmployeeDetails = () => {
       width: 150,
       editable: false,
       headerClassName: "customHeader",
-      flex:1
+      flex: 1,
     },
     {
       field: "dateOfBirth",
@@ -97,19 +100,19 @@ const EmployeeDetails = () => {
       editable: false,
       // cellClassName: (params) => (params.value===true ? 'activeCell' : 'inactiveCell'),
       // valueFormatter:(param)=>param.value===true?"Active":"In Active",
-      renderCell:(param)=>format(param.value,"dd-MM-yyyy"),
-       //valueFormatter:(params) => format(params.value,"dd-MM-yyyy"),
+      renderCell: (param) => format(param.value, "dd-MM-yyyy"),
+      //valueFormatter:(params) => format(params.value,"dd-MM-yyyy"),
       headerClassName: "customHeader",
-      flex:1
+      flex: 1,
     },
     {
       field: "Action",
       headerName: "Action",
       width: 200,
       editable: false,
-      flex:1,
+      flex: 1,
       sortable: false,
-      headerAlign:"center",
+      headerAlign: "center",
       headerClassName: "customHeader",
       renderCell: (params) => {
         return (
@@ -152,8 +155,12 @@ const EmployeeDetails = () => {
       navigation("/employeedetail/new", { state: { options } });
     });
   };
-  const [employeeDetails, setEmployeeDetails] = useState<IEmployeeDetails[]>([]);
-  const [searchEmployeeDetails, setSearchEmployeeDetails] = useState<IEmployeeDetails[]>([]);
+  const [employeeDetails, setEmployeeDetails] = useState<IEmployeeDetails[]>(
+    []
+  );
+  const [searchEmployeeDetails, setSearchEmployeeDetails] = useState<
+    IEmployeeDetails[]
+  >([]);
   const [deleteItem, setDeleteItem] = useState<IEmployeeDetails>();
   useEffect(() => {
     getEmployeeDetails();
@@ -188,26 +195,26 @@ const EmployeeDetails = () => {
   //   { id: 9, lastName: 'Roxie', firstName: 'Harvey', age: 14,phonenumber:'123',email:'sample@123',accounttype:'personal',DOB:'20-11-2022' },
   // ];
   const CustomToolbar = () => (
-   <GridToolbar>
-   <TextField
-  value={searchText}
-  onChange={(event) => requestSearch(event.target.value)}
-  placeholder="Search..."
-  InputProps={{
-    startAdornment: (
-      <InputAdornment position="start">
-        <Search />
-      </InputAdornment>
-    ),
-    endAdornment: (
-      <InputAdornment position="end">
-        <IconButton onClick={clearSearch}>
-          <Clear />
-        </IconButton>
-      </InputAdornment>
-    ),
-  }}
-/>
+    <GridToolbar>
+      <TextField
+        value={searchText}
+        onChange={(event) => requestSearch(event.target.value)}
+        placeholder="Search..."
+        InputProps={{
+          startAdornment: (
+            <InputAdornment position="start">
+              <Search />
+            </InputAdornment>
+          ),
+          endAdornment: (
+            <InputAdornment position="end">
+              <IconButton onClick={clearSearch}>
+                <Clear />
+              </IconButton>
+            </InputAdornment>
+          ),
+        }}
+      />
     </GridToolbar>
   );
   const [searchText, setSearchText] = React.useState("");
@@ -215,19 +222,23 @@ const EmployeeDetails = () => {
 
   const requestSearch = (searchValue: any) => {
     console.log("filter", searchValue);
-    if(searchValue !==""){
+    if (searchValue !== "") {
       setSearchText(searchValue);
-      const filteredRows = employeeDetails.filter(row =>
-      
-        row.gender?.toLowerCase().includes(searchValue.toLowerCase()) ||
-        row.firstName?.toLowerCase().includes(searchValue.toLowerCase()) ||
-         (format((row.dateOfBirth.toString().split("T"))[0],'dd-MM-yyyy').toLowerCase().includes(searchValue.toLowerCase())) ||
-        row.lastName?.toString().toLowerCase().includes(searchValue.toLowerCase()) ||
-        row.employeeId?.toLowerCase().includes(searchValue.toLowerCase()) ||
-        row.phoneNumber?.toLowerCase().includes(searchValue.toLowerCase()) ||
-        row.email?.toLowerCase().includes(searchValue.toLowerCase()) ||
-        row.accountType?.toLowerCase().includes(searchValue.toLowerCase()) 
-        
+      const filteredRows = employeeDetails.filter(
+        (row) =>
+          row.gender?.toLowerCase().includes(searchValue.toLowerCase()) ||
+          row.firstName?.toLowerCase().includes(searchValue.toLowerCase()) ||
+          format(row.dateOfBirth.toString().split("T")[0], "dd-MM-yyyy")
+            .toLowerCase()
+            .includes(searchValue.toLowerCase()) ||
+          row.lastName
+            ?.toString()
+            .toLowerCase()
+            .includes(searchValue.toLowerCase()) ||
+          row.employeeId?.toLowerCase().includes(searchValue.toLowerCase()) ||
+          row.phoneNumber?.toLowerCase().includes(searchValue.toLowerCase()) ||
+          row.email?.toLowerCase().includes(searchValue.toLowerCase()) ||
+          row.accountType?.toLowerCase().includes(searchValue.toLowerCase())
       );
       // const filteredRows = employeeDetails.filter(row =>
       //   Object.values(row).some(value =>
@@ -235,17 +246,16 @@ const EmployeeDetails = () => {
       //   )
       // );
       setSearchEmployeeDetails(filteredRows);
-    }
-    else{
-      setSearchText("")
-      setSearchEmployeeDetails([])
+    } else {
+      setSearchText("");
+      setSearchEmployeeDetails([]);
     }
     // Perform search logic here
   };
 
   const clearSearch = () => {
     setSearchText("");
-    setSearchEmployeeDetails([])
+    setSearchEmployeeDetails([]);
   };
   const handleClickOpen = (param: IEmployeeDetails) => {
     setOpen(true);
@@ -257,7 +267,7 @@ const EmployeeDetails = () => {
   };
   const handleDelete = () => {
     try {
-        deleteEmployeeDetails(deleteItem?.id ? deleteItem.id : 0)
+      deleteEmployeeDetails(deleteItem?.id ? deleteItem.id : 0)
         .then((result) => {
           if (result.data.status === "Success") {
             getEmployeeDetails();
@@ -274,16 +284,19 @@ const EmployeeDetails = () => {
       navigation("/");
     }
   };
-  const handleAddNewUser=()=>{
+  const handleAddNewUser = () => {
     startTransition(() => {
-    navigation("/employeedetail/new");
-    })
-  }
- 
+      navigation("/employeedetail/new");
+    });
+  };
   return (
-    <Box >
+    <Box>
       <Box>
-        <Typography  sx={{fontWeight:"900" }}display={"flex"} justifyContent={"center"}>
+        <Typography
+          sx={{ fontWeight: "900" }}
+          display={"flex"}
+          justifyContent={"center"}
+        >
           Employee Details
         </Typography>
 
@@ -294,29 +307,35 @@ const EmployeeDetails = () => {
             alignItems: "center",
           }}
         >
-             <TextField
-  value={searchText}
-  onChange={(event) => requestSearch(event.target.value)}
-  placeholder="Search..."
-  InputProps={{
-    startAdornment: (
-      <InputAdornment position="start">
-        <Search />
-      </InputAdornment>
-    ),
-    endAdornment: (
-      <InputAdornment position="end">
-        <IconButton onClick={clearSearch}>
-          <Clear />
-        </IconButton>
-      </InputAdornment>
-    ),
-  }}
-/>
-          <Typography display={"flex"} justifyContent={"end"}>
-            TotalCount:{searchEmployeeDetails.length>0?searchEmployeeDetails.length:employeeDetails.length}
+          <TextField 
+          size="small"
+            value={searchText}
+            onChange={(event) => requestSearch(event.target.value)}
+            placeholder="Search..."
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start" >
+                  <Search  sx={{margin:0,padding:0}}/>
+                </InputAdornment>
+              ),
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton onClick={clearSearch} sx={{margin:0,padding:0}}>
+                    <Clear />
+                  </IconButton>
+                </InputAdornment>
+              ),
+            }}
+          />
+          <Typography display={"flex"} justifyContent={"center"} sx={{fontWeight:"700"}}>
+            Total Count: 
+            <span style={{fontWeight:100}}>
+            {searchEmployeeDetails.length > 0
+              ? searchEmployeeDetails.length
+              : employeeDetails.length}
+              </span>
           </Typography>
-          
+
           <Button
             variant="outlined"
             //startIcon={<AddCircleOutlineIcon />}
@@ -324,10 +343,9 @@ const EmployeeDetails = () => {
               margin: 15,
               alignItems: "flex-end",
               justifyContent: "flex-end",
-              textTransform:"capitalize",
-              color:"primary", 
-              
-              padding:5
+              textTransform: "capitalize",
+              color: "primary",
+              padding: 5,
             }}
             onClick={handleAddNewUser}
           >
@@ -335,10 +353,14 @@ const EmployeeDetails = () => {
           </Button>
         </Box>
       </Box>
-   
-<DataGrid
-        sx={{ margin: 1, border:2 ,position:"relative"}}
-         rows={searchText !==""?searchEmployeeDetails:employeeDetails}
+      {/* <div style={{ height: "100%", width: '100%' }}>
+      {(searchText !== "" ? searchEmployeeDetails : employeeDetails).length === 0 ? (
+        <div>No data available</div>
+      ) : ( */}
+      <div style={{ height: 500, width: '100%' }}>
+        <DataGrid
+        
+        rows={searchText !== "" ? searchEmployeeDetails : employeeDetails}
         columns={columns}
         initialState={{
           pagination: {
@@ -350,17 +372,22 @@ const EmployeeDetails = () => {
         // components={{
         //   Toolbar: CustomToolbar,
         // }}
-         pageSizeOptions={[10]}
+        pageSizeOptions={[10]}
         // checkboxSelection
         disableColumnMenu
         disableColumnSelector
         disableDensitySelector
         //disableVirtualization
         disableRowSelectionOnClick={true}
+        
       />
-    
+      </div>
+        {/* )}
+      </div> */}
+     
+
       <Dialog
-        sx={{ boxSizing: "80%" }}
+        sx={{ boxSizing: "100%" }}
         open={open}
         onClose={handleClose}
         aria-labelledby="alert-dialog-title"
@@ -370,7 +397,7 @@ const EmployeeDetails = () => {
           {"Use Google's location service?"}
         </DialogTitle> */}
         <DialogContent>
-          <DialogContentText id="alert-dialog-description">
+          <DialogContentText id="alert-dialog-description" fontWeight={"500"} color={"#000000"}>
             Are you sure you want to delete this detail?
           </DialogContentText>
         </DialogContent>

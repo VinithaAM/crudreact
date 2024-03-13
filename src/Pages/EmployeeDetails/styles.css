@@ -6,10 +6,13 @@
   
   .custom-toast-body {
     font-size: 16px;
+    background-color: #e7f376;
+    border-color: #070606;
   }
   
   .custom-toast-progress {
     background-color: rgba(43, 255, 0, 0.815);
+  border-color: aqua;
   }
   .small-textfield .MuiInputBase-input {
     padding: 5px;
@@ -19,6 +22,19 @@
   
   .small-textfield .MuiOutlinedInput-root {
     width: 200px;
+   
+  }
+  .search .MuiInputBase-input {
+    padding: 5px;
+    font-size: 12px; 
+    
+  }
+  
+  .search .MuiOutlinedInput-root {
+    width: 215px;
+    border-radius: 15px;
+    border: #070606;
+    padding: 3px;
   }
   .verysmall-textfield .MuiOutlinedInput-root {
     width: 40px;
@@ -28,7 +44,21 @@
     font-size: 12px; 
     
   }
- 
+  .datepicker .MuiInputBase-input {
+    padding: 5px;
+    font-size: 12px; 
+    padding-bottom: 0%;
+    
+  }
+  
+  .datepicker .MuiOutlinedInput-root {
+    width: 200px;
+    padding-bottom: 0%;
+  }
+  .datepicker.MuiStack-root {
+    overflow: hidden;
+    padding-top: 0%;
+  }
   .datepicker .react-datepicker-wrapper {
     width: 100%; /* Adjust width as needed */
   }
@@ -80,3 +110,15 @@
 .css-vhiuen-MuiInputBase-root-MuiOutlinedInput-root-MuiSelect-root{
   width: 200px !important;
 }
+.label{
+  color: blue;
+  font-weight: 600;
+
+}
+.custom-datepicker.MuiStack-root {
+  padding-top: 0;
+}
+/* .custom-datepicker .MuiInputBase-input {
+  padding-top: 0;
+  padding-bottom: 0;
+} */
