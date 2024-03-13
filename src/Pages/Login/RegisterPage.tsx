@@ -1,7 +1,6 @@
 import { Box, Button, Grid, Stack, TextField, Typography } from "@mui/material/";
-import React, { useContext } from "react";
 
-//CONTEXT
+
 
 const Registration=()  => {
   const dateLimit = new Date();

@@ -1,5 +1,5 @@
 import React, { startTransition, useEffect, useState } from "react";
-import { DataGrid, GridColDef, GridToolbar } from "@mui/x-data-grid";
+import { DataGrid, GridColDef } from "@mui/x-data-grid";
 // GridToolbar, GridValueGetterParams, InputAdornment, InputLabel,
 import {
   Box,
@@ -8,8 +8,6 @@ import {
   DialogActions,
   DialogContent,
   DialogContentText,
-  DialogTitle,
-  Grid,
   IconButton,
   InputAdornment,
   TextField,
@@ -28,7 +26,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import { NavigateOptions, useNavigate } from "react-router-dom";
 import { format } from "date-fns";
 import "./styles.css";
-import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
+import { ToastContainer, toast } from "react-toastify";
 
 const EmployeeDetails = () => {
   const navigation = useNavigate();
@@ -164,7 +162,7 @@ const EmployeeDetails = () => {
   const [deleteItem, setDeleteItem] = useState<IEmployeeDetails>();
   useEffect(() => {
     getEmployeeDetails();
-  }, []);
+  }, [employeeDetails]);
   const getEmployeeDetails = () => {
     try {
       getUserDetails()
@@ -172,7 +170,7 @@ const EmployeeDetails = () => {
           if (result.data.status === "Success") {
             setEmployeeDetails(result.data.data);
           } else {
-            alert(result.data.message);
+            toast(result.data.message);
           }
         })
         .catch((error) => {
@@ -194,29 +192,29 @@ const EmployeeDetails = () => {
   //   { id: 8, lastName: 'Frances', firstName: 'Rossini', age: 14,phonenumber:'123',email:'sample@123',accounttype:'personal',DOB:'20-11-2022' },
   //   { id: 9, lastName: 'Roxie', firstName: 'Harvey', age: 14,phonenumber:'123',email:'sample@123',accounttype:'personal',DOB:'20-11-2022' },
   // ];
-  const CustomToolbar = () => (
-    <GridToolbar>
-      <TextField
-        value={searchText}
-        onChange={(event) => requestSearch(event.target.value)}
-        placeholder="Search..."
-        InputProps={{
-          startAdornment: (
-            <InputAdornment position="start">
-              <Search />
-            </InputAdornment>
-          ),
-          endAdornment: (
-            <InputAdornment position="end">
-              <IconButton onClick={clearSearch}>
-                <Clear />
-              </IconButton>
-            </InputAdornment>
-          ),
-        }}
-      />
-    </GridToolbar>
-  );
+  // const CustomToolbar = () => (
+  //   <GridToolbar>
+  //     <TextField
+  //       value={searchText}
+  //       onChange={(event) => requestSearch(event.target.value)}
+  //       placeholder="Search..."
+  //       InputProps={{
+  //         startAdornment: (
+  //           <InputAdornment position="start">
+  //             <Search />
+  //           </InputAdornment>
+  //         ),
+  //         endAdornment: (
+  //           <InputAdornment position="end">
+  //             <IconButton onClick={clearSearch}>
+  //               <Clear />
+  //             </IconButton>
+  //           </InputAdornment>
+  //         ),
+  //       }}
+  //     />
+  //   </GridToolbar>
+  // );
   const [searchText, setSearchText] = React.useState("");
   const [open, setOpen] = React.useState(false);
 
@@ -227,7 +225,7 @@ const EmployeeDetails = () => {
       const filteredRows = employeeDetails.filter(
         (row) =>
           row.gender?.toLowerCase().includes(searchValue.toLowerCase()) ||
-          row.firstName?.toLowerCase().includes(searchValue.toLowerCase()) ||
+          (row.firstName + " " + row.lastName).toLowerCase().includes(searchValue.toLowerCase()) ||
           format(row.dateOfBirth.toString().split("T")[0], "dd-MM-yyyy")
             .toLowerCase()
             .includes(searchValue.toLowerCase()) ||
@@ -273,7 +271,7 @@ const EmployeeDetails = () => {
             getEmployeeDetails();
             setOpen(false);
           } else {
-            alert(result.data.message);
+            toast(result.data.message);
           }
         })
         .catch((error) => {
@@ -289,6 +287,14 @@ const EmployeeDetails = () => {
       navigation("/employeedetail/new");
     });
   };
+  function CustomToolbar() {
+    return (
+   
+        <Typography variant="body2" color="textSecondary">
+          Total rows: {employeeDetails.length}
+        </Typography>
+    );
+  }
   return (
     <Box>
       <Box>
@@ -353,10 +359,6 @@ const EmployeeDetails = () => {
           </Button>
         </Box>
       </Box>
-      {/* <div style={{ height: "100%", width: '100%' }}>
-      {(searchText !== "" ? searchEmployeeDetails : employeeDetails).length === 0 ? (
-        <div>No data available</div>
-      ) : ( */}
       <div style={{ height: 500, width: '100%' }}>
         <DataGrid
         
@@ -369,22 +371,14 @@ const EmployeeDetails = () => {
             },
           },
         }}
-        // components={{
-        //   Toolbar: CustomToolbar,
-        // }}
         pageSizeOptions={[10]}
-        
-        // checkboxSelection
         disableColumnMenu
-        disableColumnSelector
-        disableDensitySelector
-        disableVirtualization
+        disableColumnSelector={false}
+        disableDensitySelector={false}
+        disableVirtualization={false}
         disableRowSelectionOnClick={true}
-        
       />
       </div>
-        {/* )}
-      </div> */}
      
 
       <Dialog
@@ -394,9 +388,6 @@ const EmployeeDetails = () => {
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
-        {/* <DialogTitle id="alert-dialog-title">
-          {"Use Google's location service?"}
-        </DialogTitle> */}
         <DialogContent>
           <DialogContentText id="alert-dialog-description" fontWeight={"500"} color={"#000000"}>
             Are you sure you want to delete this detail?
@@ -409,6 +400,13 @@ const EmployeeDetails = () => {
           </Button>
         </DialogActions>
       </Dialog>
+      <ToastContainer
+        className="toast-container"
+        toastClassName="custom-toast"
+        bodyClassName="custom-toast-body"
+        progressClassName="custom-toast-progress"
+      />
+
     </Box>
   );
 };

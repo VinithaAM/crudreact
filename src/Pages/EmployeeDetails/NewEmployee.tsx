@@ -1,7 +1,6 @@
 import {
   Box,
   Button,
-  Checkbox,
   Container,
   Grid,
   IconButton,
@@ -14,14 +13,10 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import MaskedInput from "react-text-mask";
 import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import dayjs, { Dayjs } from "dayjs";
-import { forwardRef, startTransition, useEffect, useState } from "react";
-import { IMaskInput } from "react-imask";
-import ToggleOffOutlinedIcon from "@mui/icons-material/ToggleOffOutlined";
-import ToggleOnOutlinedIcon from "@mui/icons-material/ToggleOnOutlined";
+import dayjs from "dayjs";
+import {  startTransition, useEffect, useState } from "react";
 import "./styles.css";
 import { IEmployeeDetails, emptyObject } from "../../Types.ts/Employee";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -32,7 +27,6 @@ import {
 } from "../../Services/EmployeeService";
 import { ToastContainer, toast } from "react-toastify";
 import PasswordChecklist from "react-password-checklist";
-// import DatePicker from "react-date-picker";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import "react-date-picker/dist/DatePicker.css";
 import "react-calendar/dist/Calendar.css";
@@ -41,7 +35,7 @@ import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import TextMaskCustom from "../../Component/MobileMasking";
 import { LocalizationProvider } from "@mui/x-date-pickers";
-import { Search } from "@mui/icons-material";
+
 
 const NewEmployee = (prop: IEmployeeDetails) => {
   const navigation = useNavigate();
@@ -62,7 +56,7 @@ const NewEmployee = (prop: IEmployeeDetails) => {
   const [showConPassword, setShowConPassword] = useState(false);
   const [isValidPassword, setIsValidPassword] = useState(false);
   useEffect(() => {
-    if (state?.options !== null && state?.options != undefined) {
+    if (state?.options !== null && state?.options !== undefined) {
       setEmplyeeDetails(state.options.param);
       setAction(state.options.action);
       setGenderValue(state.options.param.gender);
@@ -126,11 +120,6 @@ const NewEmployee = (prop: IEmployeeDetails) => {
           const isValidEmail = emailRegex.test(value);
           setIsValid(isValidEmail);
         }
-        if(field ==="firstName"){
-          const nameRegex=/[^a-zA-Z\s\d!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/g;
-          const i = nameRegex.test(value);
-          console.log("email",i)
-        }
         if (field === "password") {
           setPasswordsMatch(value === confirmPassword);
         }
@@ -161,6 +150,13 @@ const NewEmployee = (prop: IEmployeeDetails) => {
       setIsSharedAccount(false);
     }
     handleEditEmployee("accountType", event.target.value, employeeDetail.id);
+  };
+  const handleNameChange = (event: string, field: string) => {
+    const value = event
+    const regex = /^[a-zA-Z !@#$%^&*()/]*$/;
+    if (regex.test(value) ) {
+      handleEditEmployee(field,value,employeeDetail.id);
+    }
   };
   const validateField = () => {
     let message = "Empty field in form ";
@@ -338,25 +334,16 @@ const NewEmployee = (prop: IEmployeeDetails) => {
     console.log("rule", isvalid, passwordrule);
     setIsValidPassword(isvalid);
   };
-  const label = { inputProps: { 'aria-label': 'Color switch demo' } };
+   const label = { inputProps: { 'aria-label': 'Color switch demo' } };
   return (
-    <Container
-      style={{
-        display: "flex",
-        justifyContent: "center",
-        backgroundImage: `url(${"../assets/download.jpg"})`,
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        backgroundRepeat: "no-repeat",
-      }}
-    >
+    <Container>
       <Box
         sx={{
           marginTop: 5,
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
-          maxWidth: "80%",
+          maxWidth: "100%",
           justifyContent: "center",
         }}
       >
@@ -400,10 +387,9 @@ const NewEmployee = (prop: IEmployeeDetails) => {
                 inputProps={{ maxLength: 100 }}
                 value={employeeDetail.firstName}
                 onChange={(e) =>
-                  handleEditEmployee(
-                    "firstName",
+                  handleNameChange(
                     e?.target?.value,
-                    employeeDetail.id
+                    "firstName"
                   )
                 }
               />
@@ -432,11 +418,11 @@ const NewEmployee = (prop: IEmployeeDetails) => {
                 inputProps={{ maxLength: 100 }}
                 value={employeeDetail.lastName}
                 onChange={(e) =>
-                  handleEditEmployee(
-                    "lastName",
+                  handleNameChange(
                     e?.target?.value,
-                    employeeDetail.id
+                    "lastName"
                   )
+                 
                 }
               />
               {}
@@ -542,6 +528,7 @@ const NewEmployee = (prop: IEmployeeDetails) => {
                     slotProps={{ textField: { size: "small" } }}
                     disabled={action === "View"}
                     value={dayjs(dob)}
+                    maxDate={dayjs(new Date())}
                     onChange={(newValue) =>
                       handleEditEmployee(
                         "dateOfBirth",
@@ -727,6 +714,7 @@ const NewEmployee = (prop: IEmployeeDetails) => {
               <Switch
               disabled={action === "View"}
                 checked={userStatus}
+                {...label} color="secondary"
                 onChange={(e) =>
                   handleEditEmployee(
                     "userStatus",
@@ -876,6 +864,7 @@ const NewEmployee = (prop: IEmployeeDetails) => {
                 <Switch
                 disabled={action === "View"}
                 checked={enableTwofactor}
+                {...label} color= "primary"
                 onChange={(e) =>
                   handleEditEmployee(
                     "enableTwoFactor",
@@ -943,6 +932,7 @@ const NewEmployee = (prop: IEmployeeDetails) => {
         bodyClassName="custom-toast-body"
         progressClassName="custom-toast-progress"
       />
+
     </Container>
   );
 };
