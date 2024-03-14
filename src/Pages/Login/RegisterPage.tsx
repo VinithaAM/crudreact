@@ -1,10 +1,15 @@
 import { Box, Button, Grid, Stack, TextField, Typography } from "@mui/material/";
+import { useNavigate } from "react-router-dom";
 
 
 
 const Registration=()  => {
+  const navigation=useNavigate()
   const dateLimit = new Date();
   dateLimit.setFullYear(dateLimit.getFullYear() - 18);
+  const handleCancel=()=>{
+    navigation("/")
+  }
   return (
     <Stack spacing={1}>
       <Box display={"flex"}alignItems={"center"} justifyContent={"center"}>
@@ -146,8 +151,8 @@ const Registration=()  => {
                   padding: 5,
                   textTransform: "capitalize",
                  
-                }}>
-         Clear
+                }} onClick={handleCancel}>
+         Cancel
         </Button>
         </Box>
         

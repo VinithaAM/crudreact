@@ -25,7 +25,7 @@ import VisibilityIcon from "@mui/icons-material/Visibility";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { NavigateOptions, useNavigate } from "react-router-dom";
 import { format } from "date-fns";
-import "./styles.css";
+import "./Employee.style.css";
 import { ToastContainer, toast } from "react-toastify";
 
 const EmployeeDetails = () => {
@@ -151,7 +151,7 @@ const EmployeeDetails = () => {
       };
       console.log("bu", param);
       navigation("/employeedetail/new", { state: { options } });
-    });
+   });
   };
   const [employeeDetails, setEmployeeDetails] = useState<IEmployeeDetails[]>(
     []
@@ -226,7 +226,7 @@ const EmployeeDetails = () => {
         (row) =>
           row.gender?.toLowerCase().includes(searchValue.toLowerCase()) ||
           (row.firstName + " " + row.lastName).toLowerCase().includes(searchValue.toLowerCase()) ||
-          format(row.dateOfBirth.toString().split("T")[0], "dd-MM-yyyy")
+          format(row.dateOfBirth?row.dateOfBirth?.toString().split("T")[0]:'', "dd-MM-yyyy")
             .toLowerCase()
             .includes(searchValue.toLowerCase()) ||
           row.lastName
@@ -283,9 +283,9 @@ const EmployeeDetails = () => {
     }
   };
   const handleAddNewUser = () => {
-    startTransition(() => {
+     startTransition(() => {
       navigation("/employeedetail/new");
-    });
+     });
   };
   function CustomToolbar() {
     return (

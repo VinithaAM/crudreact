@@ -1,3 +1,4 @@
+import { Box } from "@mui/material"
 import Footer from "./Footer"
 import Header from "./Header"
 
@@ -6,14 +7,13 @@ interface Layoutprops{
 }
 const Layout = (props:Layoutprops) => {
   return (
-    <div>
+    <Box >
       <Header />
-      <div style={{minHeight:"90vh",minWidth:"80vh"}}>
+      <Box style={{minHeight:"90vh",minWidth:"70vh"}}>
       {props.children}
-      </div>
-      
+      </Box>
       <Footer />
-    </div>
+    </Box>
   )
 }
 

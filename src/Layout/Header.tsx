@@ -1,5 +1,4 @@
 import { AppBar, Box, Drawer, IconButton,  Menu, MenuItem, Toolbar, Typography } from '@mui/material'
-import MoreIcon from "@mui/icons-material/MoreVert";
 import AccountCircle from "@mui/icons-material/AccountCircle";
 import MenuIcon from "@mui/icons-material/Menu";
 import Sidebar from './Sidebar';
@@ -107,7 +106,7 @@ const Header = () => {
             </Box>
             <Box sx={{ display: { xs: "flex", md: "none" } }}>
               <IconButton size="large" aria-label="show more" color="inherit">
-                {/* <MoreIcon /> */}
+              
               </IconButton>
             </Box>
           </Toolbar>

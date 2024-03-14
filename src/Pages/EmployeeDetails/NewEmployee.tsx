@@ -12,12 +12,13 @@ import {
   Switch,
   TextField,
   Typography,
+  CircularProgress 
 } from "@mui/material";
 import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs from "dayjs";
 import {  startTransition, useEffect, useState } from "react";
-import "./styles.css";
+import "./Employee.style.css";
 import { IEmployeeDetails, emptyObject } from "../../Types.ts/Employee";
 import { useLocation, useNavigate } from "react-router-dom";
 import { getRandomNumber } from "../../Constants/RandomNumber";
@@ -41,8 +42,7 @@ const NewEmployee = (prop: IEmployeeDetails) => {
   const navigation = useNavigate();
   const location = useLocation();
   const state = location.state;
-  const [employeeDetail, setEmplyeeDetails] =
-    useState<IEmployeeDetails>(emptyObject);
+  const [employeeDetail, setEmplyeeDetails] =useState<IEmployeeDetails>(emptyObject);
   const [dob, setDob] = useState(null);
   const [genderValue, setGenderValue] = useState("");
   const [userStatus, setUserStatus] = useState(true);
@@ -55,6 +55,7 @@ const NewEmployee = (prop: IEmployeeDetails) => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConPassword, setShowConPassword] = useState(false);
   const [isValidPassword, setIsValidPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
   useEffect(() => {
     if (state?.options !== null && state?.options !== undefined) {
       setEmplyeeDetails(state.options.param);
@@ -148,6 +149,11 @@ const NewEmployee = (prop: IEmployeeDetails) => {
       setIsSharedAccount(true);
     } else {
       setIsSharedAccount(false);
+        employeeDetail.password=""
+        setConfirmPassword('')
+        employeeDetail.enableTwoFactor=false
+        setEnableTwofactor(false)
+      
     }
     handleEditEmployee("accountType", event.target.value, employeeDetail.id);
   };
@@ -159,32 +165,41 @@ const NewEmployee = (prop: IEmployeeDetails) => {
     }
   };
   const validateField = () => {
-    let message = "Empty field in form ";
+    let message = "Empty field in form  ";
     let passMessage="";
     let emailvalidationMessage="";
     let error = false;
     if (employeeDetail.firstName === "") {
-      message += " FirstName,";
+      message += "Firstname ";
       error = true;
     } 
     if (employeeDetail.lastName === "") {
-      message += "  Lastname,";
+      message += "Lastname ";
       error = true;
     } 
     if (employeeDetail.gender === "") {
-      message += " Gender,";
+      message += "Gender ";
+      error = true;
+    } 
+    if (employeeDetail.dateOfBirth === undefined) {
+      message += "DOB ";
       error = true;
     } 
     if (employeeDetail.phoneNumber === "") {
-      message += "  PhoneNumber,";
+      message += "PhoneNumber ";
       error = true;
     }
     if (employeeDetail.email === "") {
-      message += "  E-mail ,";
+      message += "E-mail ";
       error = true;
     } 
     if (employeeDetail.accountType === "") {
-      message += "  AccountType ";
+      message += "AccountType ";
+      error = true;
+    } 
+   
+    if (employeeDetail.password === "" && employeeDetail.accountType =="Shared") {
+      message += "Password ";
       error = true;
     } 
     if(!isValid){
@@ -201,36 +216,34 @@ const NewEmployee = (prop: IEmployeeDetails) => {
         passMessage = "Confirm Password Not match with Password  ";
       } 
     }
-    if (error ) {
-       if(passMessage !== '' || message !=="" || emailvalidationMessage){
-        // message = message.slice(0, -2);
-       
-        let errorMessage=message+" " + passMessage+" " + emailvalidationMessage
-      
-        toast.error(errorMessage,{
+    if (error) {
+       if(message.includes("Firstname")||message.includes("Lastname") || message.includes("E-mail")|| message.includes("Gender")||
+       message.includes("PhoneNumber")|| message.includes("AccountType")|| message.includes("Password")||message.includes("DOB")){
+        toast.error(message,{
           position:"top-right"
         })
       }
-      else  if(passMessage !==""){
+     if(passMessage !==""){
         toast.error(passMessage, {
           position: "top-right",
         });
       }
-      else  if(emailvalidationMessage !==""){
+     if(emailvalidationMessage !==""){
         toast.error(emailvalidationMessage, {
           position: "top-right",
         });
       }
-      else{
-        message = message.slice(0, -2);
-        toast.error(message ,{
-          position:"top-right"
-        })
-      }
+      // else{
+      //   message = message.slice(0, -2);
+      //   toast.error(message ,{
+      //     position:"top-right"
+      //   })
+      // }
       
      
       return error;
     } 
+    return error;
   };
   const newData = {
     ...employeeDetail,
@@ -255,6 +268,7 @@ const NewEmployee = (prop: IEmployeeDetails) => {
           // employeeDetail.accountType !== ""
           (validateField() !== true)
         ) {
+          setLoading(true)
           setEmplyeeDetails({
             ...employeeDetail,
             modifiedBy: 1,
@@ -266,6 +280,7 @@ const NewEmployee = (prop: IEmployeeDetails) => {
             .then((result) => {
               if (result.data.status === "Success") {
                 toast(result.data.message);
+                setLoading(false)
                 navigation("/employeedetails");
               }
             })
@@ -295,6 +310,7 @@ const NewEmployee = (prop: IEmployeeDetails) => {
           // passwordsMatch
           (validateField() !== true)
         ) {
+          setLoading(true)
           setEmplyeeDetails({
             ...employeeDetail,
             createdBy: 1,
@@ -306,6 +322,7 @@ const NewEmployee = (prop: IEmployeeDetails) => {
             .then((result) => {
               if (result.data.status === "Success") {
                 toast(result.data.message);
+                setLoading(false)
                 navigation("/employeedetails");
               }
             })
@@ -347,6 +364,7 @@ const NewEmployee = (prop: IEmployeeDetails) => {
           justifyContent: "center",
         }}
       >
+        {loading && <CircularProgress size={24} color="primary" />}
         <Grid container spacing={1}>
           <Grid item xs={12}>
             <Box
@@ -901,7 +919,7 @@ const NewEmployee = (prop: IEmployeeDetails) => {
                   textTransform: "capitalize",
                   backgroundColor: "green",
                 }}
-                disabled={action === "View"}
+                disabled={action === "View" ||loading}
                 onClick={handleSave}
               >
                 {action === "View"

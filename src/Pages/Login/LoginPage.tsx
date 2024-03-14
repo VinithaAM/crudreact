@@ -20,8 +20,8 @@ const LoginPage = () => {
           })
         }
         else{
-          toast.success("Please provide valid Login details!", {
-            position: "top-center"
+          toast.warning("Please provide valid Login details!", {
+            position: "top-right"
           });
         }
     }
@@ -30,6 +30,9 @@ const LoginPage = () => {
     }
     const onHandlePassword=(event:any)=>{
         setPassword(event.target.value)
+    }
+    const handleSignup=()=>{
+      navigate("/signup")
     }
   return (
     <ThemeProvider theme={theme}>
@@ -101,8 +104,9 @@ const LoginPage = () => {
               </Link>
             </Grid>
             <Grid item>
-              <Link href="#" variant="body2">
+              <Link href="#" variant="body2" onClick={handleSignup}>
                 {"Don't have an account? Sign Up"}
+                
               </Link>
             </Grid>
           </Grid>

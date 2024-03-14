@@ -3,7 +3,7 @@ export interface IEmployeeDetails extends CommonFields {
     firstName: string;
     lastName: string;
     employeeId: string;
-    dateOfBirth: Date;
+    dateOfBirth: Date |undefined;
     age: number;
     gender:string;
     phoneNumber:string;
@@ -27,7 +27,7 @@ export interface IEmployeeDetails extends CommonFields {
     firstName: "",
     lastName: "",
     employeeId: "",
-    dateOfBirth: new Date(),
+    dateOfBirth: undefined,
     age: 0,
     gender:"",
     phoneNumber:"",
@@ -38,9 +38,9 @@ export interface IEmployeeDetails extends CommonFields {
     enableTwoFactor:false,
     status:true,
     createdBy:0,
-    createdDateTime:new Date(),
+    createdDateTime:undefined,
     modifiedBy:0,
-    modifiedDateTime:new Date(),
+    modifiedDateTime:undefined,
     deletedBy:0,
-    deletedDateTime:new Date()
+    deletedDateTime:undefined
   }

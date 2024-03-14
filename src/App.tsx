@@ -6,7 +6,6 @@ import BaseRoute from './Routes/BaseRoute';
 function App() {
   return (
   <BaseRoute />
- 
   );
 }
 
